@@ -529,6 +529,7 @@ function drawUnit(g, en, now) {
   let rot = 0, sxs = 1, sys = 1;
   if (en.moving) { lift += Math.abs(Math.sin(en.anim * 9)) * s * .12; rot = Math.sin(en.anim * 9) * .06; }
   if (en.lunge > 0) { const k = en.lunge / .14; sxs = 1 + .14 * k; sys = 1 - .1 * k; }
+  if (en.landT > 0) { const k = en.landT / .25; sxs *= 1 + .25 * k; sys *= 1 - .2 * k; }
   if (en.kind === 'building') { rot = 0; lift = 0; }
   let alpha = 1, drop = 0;
   if (en.deploy > 0) {
@@ -686,6 +687,12 @@ function drawFx(g, f) {
       }
       g.globalAlpha = 1; break;
     }
+    case 'card': {
+      const cw = s * 1.5, ch = cw * 1.2, a = k < .7 ? 1 : (1 - k) / .3;
+      const flip = !L.land && f.team === 1 && B.mode !== 'bot';
+      g.globalAlpha = a; g.save(); g.translate(sx, sy - s * 2.2 - k * s * .8); if (flip) g.rotate(Math.PI);
+      g.drawImage(cardCanvas(f.key, cw, ch), -cw / 2, -ch / 2, cw, ch); g.restore(); g.globalAlpha = 1; break;
+    }
     case 'wake': { g.globalAlpha = 1 - k; txt(g, '!', sx, sy - s * 4 - k * s, s * 1.4, '#ffd84a'); g.globalAlpha = 1; break; }
   }
 }
@@ -697,8 +704,9 @@ function drawGhosts(g, now) {
     const c = CARDS[key];
     if (!d.over) {
       // card follows the finger
-      const cw = L.panels[d.team].slots[0].w * .9, ch = cw * 1.2;
-      g.globalAlpha = .9; g.drawImage(cardCanvas(key, cw, ch), d.x - cw / 2, d.y - ch / 2, cw, ch); g.globalAlpha = 1;
+      const pn = L.panels[d.team], cw = pn.slots[0].w * .9, ch = cw * 1.2;
+      g.globalAlpha = .9; g.save(); g.translate(d.x, d.y); if (pn.rot) g.rotate(pn.rot);
+      g.drawImage(cardCanvas(key, cw, ch), -cw / 2, -ch / 2, cw, ch); g.restore(); g.globalAlpha = 1;
       continue;
     }
     drawPlacementPreview(g, d.team, key, d.wx, d.wy, now);

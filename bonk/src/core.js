@@ -172,6 +172,7 @@ function playCard(team, slot, x, y) {
   B.hand[team][slot] = B.queue[team].shift();
   B.sel[team] = null;
   B.texts.push({ x, y, txt: '-' + c.cost, col: '#e36bff', t: 0, life: 1 });
+  addFx({ type: 'card', key, team, x, y, t: 0, life: 1.1 });
   if (c.type === 'spell') castSpell(team, key, x, y);
   else spawnCard(team, key, x, y);
   SFX.deploy(key);
@@ -394,6 +395,7 @@ function stepBattle() {
 function updateUnit(u) {
   if (u.flash > 0) u.flash -= DT;
   if (u.lunge > 0) u.lunge -= DT;
+  if (u.landT > 0) u.landT -= DT;
   u.anim += DT;
   if (u.kind === 'tower') {
     if (!u.active) return;
@@ -403,7 +405,7 @@ function updateUnit(u) {
     if (u.target && u.atk <= 0) { doHit(u, u.target); u.atk += u.hs; u.face = u.target.x >= u.x ? 1 : -1; }
     return;
   }
-  if (u.deploy > 0) { u.deploy -= DT; if (u.deploy <= 0) { addFx({ type: 'land', x: u.x, y: u.y, t: 0, life: .35, r: u.r * 1.6 }); u.rt = 0; } return; }
+  if (u.deploy > 0) { u.deploy -= DT; if (u.deploy <= 0) { addFx({ type: 'land', x: u.x, y: u.y, t: 0, life: .35, r: u.r * 1.6 }); u.rt = 0; u.landT = .25; } return; }
   if (u.kind === 'building') {
     u.hp -= u.maxHp / u.lifeMax * DT;
     if (u.hp <= 0) { kill(u); return; }
