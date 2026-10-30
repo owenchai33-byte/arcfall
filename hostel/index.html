@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbf8f2">
+<meta name="description" content="Prototype for Wilson: hostel tenants become a live list of workers for bosses who need them.">
+<meta property="og:title" content="Hostel Headhunter (prototype for Wilson)">
+<meta property="og:description" content="Tenants become a live list of workers. Bosses ask, the assistant finds who's free. Tap to try.">
+<meta property="og:image" content="https://owenchai33-byte.github.io/arcfall/hostel/preview.png">
+<meta property="og:url" content="https://owenchai33-byte.github.io/arcfall/hostel/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d4621c'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3EHH%3C/text%3E%3C/svg%3E">
+<title>Hostel Headhunter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: one phone-sized app (Home / Workers / Bosses) centred on the page; a short guide sits beside it on wide screens. */
+:root{
+  --bg:#efe9df; --app:#fbf8f2; --card:#ffffff; --ink:#1c232e; --muted:#5f6672; --line:#e3dacb;
+  --accent:#d4621c; --accent-ink:#ffffff; --accent-soft:#fbe5d4;
+  --ok:#2d7a4c; --ok-soft:#dcefe3; --info:#2c5c8f; --info-soft:#dfe9f5; --warn:#94600a; --warn-soft:#f9ecd2;
+  --chat:#ece5d9; --bubble-in:#ffffff; --bubble-out:#fde2cd;
+  --shadow:0 24px 60px -28px rgba(50,35,15,.45);
+  --f-display:"Bricolage Grotesque","Atkinson Hyperlegible Next",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible Next",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121419; --app:#181b21; --card:#20242c; --ink:#ede8df; --muted:#a6acb7; --line:#2f3540;
+  --accent:#f08a43; --accent-ink:#1b1209; --accent-soft:#3a2617;
+  --ok:#72d19b; --ok-soft:#173326; --info:#90bbea; --info-soft:#1b2a3c; --warn:#f0b65c; --warn-soft:#38290f;
+  --chat:#0f1216; --bubble-in:#22272f; --bubble-out:#4a2c16; --shadow:0 24px 60px -28px rgba(0,0,0,.8); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121419; --app:#181b21; --card:#20242c; --ink:#ede8df; --muted:#a6acb7; --line:#2f3540;
+  --accent:#f08a43; --accent-ink:#1b1209; --accent-soft:#3a2617;
+  --ok:#72d19b; --ok-soft:#173326; --info:#90bbea; --info-soft:#1b2a3c; --warn:#f0b65c; --warn-soft:#38290f;
+  --chat:#0f1216; --bubble-in:#22272f; --bubble-out:#4a2c16; --shadow:0 24px 60px -28px rgba(0,0,0,.8); color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+.stage{min-height:100%;display:flex;justify-content:center;align-items:flex-start;gap:48px;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.guide{max-width:300px;padding-top:40px}
+.guide .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.guide h1{font-family:var(--f-display);font-size:38px;line-height:1.02;margin:8px 0 12px;text-wrap:balance}
+.guide p{color:var(--muted);margin:0 0 14px}
+.guide ol{margin:0 0 16px;padding-left:20px;display:grid;gap:6px}
+.guide small{color:var(--muted);font-size:13px}
+@media (max-width:820px){.guide{display:none}.stage{padding:0}}
+
+.app{width:420px;max-width:100%;background:var(--app);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;height:min(860px,calc(100vh - 56px));min-height:620px;position:relative}
+@media (max-width:820px){.app{width:100%;border:0;border-radius:0;box-shadow:none;height:100vh;height:100dvh;min-height:0}}
+.bar{display:flex;align-items:center;gap:10px;padding:14px 18px 10px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:14px;flex:none}
+.bar b{font-family:var(--f-display);font-size:18px;line-height:1.1;display:block}
+.bar small{display:block;color:var(--muted);font-size:12px}
+.lang{margin-left:auto;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.lang button{border:0;background:transparent;padding:6px 11px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--app)}
+.screen{flex:1;overflow-y:auto;padding:4px 18px 24px;min-height:0;scroll-behavior:smooth}
+.tabbar{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);background:var(--app);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar button{border:0;background:none;padding:9px 4px 10px;display:grid;justify-items:center;gap:2px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;position:relative}
+.tabbar svg{width:24px;height:24px}
+.tabbar button[aria-selected="true"]{color:var(--accent)}
+.tabbar .pip{position:absolute;top:6px;left:calc(50% + 8px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font-size:11px;display:grid;place-items:center}
+
+h2{font-family:var(--f-display);font-size:26px;line-height:1.1;margin:6px 0 4px;text-wrap:balance}
+.date{color:var(--muted);font-size:14px;margin:0 0 14px}
+.note{font-size:13px;color:var(--warn);background:var(--warn-soft);border-radius:12px;padding:8px 12px;margin:0 0 14px;display:flex;gap:8px;align-items:flex-start}
+.note button{margin-left:auto;border:0;background:none;color:var(--warn);font-weight:700;cursor:pointer;padding:0 2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;text-align:left;cursor:pointer;display:grid;gap:2px}
+.tile .n{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.tile .l{font-size:14px;font-weight:700}
+.tile .s{font-size:12px;color:var(--muted)}
+.tile.work .n{color:var(--accent)}
+.tile.boss .n{color:var(--info)}
+.big{width:100%;display:flex;align-items:center;gap:12px;border:0;border-radius:16px;padding:15px 16px;font-weight:700;font-size:17px;cursor:pointer;text-align:left;margin-bottom:10px}
+.big svg{width:26px;height:26px;flex:none}
+.big span small{display:block;font-weight:400;font-size:13px;opacity:.85}
+.big.primary{background:var(--accent);color:var(--accent-ink)}
+.big.second{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:6px 0 16px}
+.panel h3{margin:0 0 4px;font-size:16px}
+.panel p{margin:0 0 10px;color:var(--muted);font-size:14px}
+.btn{border:0;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;background:var(--ink);color:var(--app);cursor:pointer;white-space:nowrap}
+.btn.acc{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ok{background:var(--ok-soft);color:var(--ok)}
+.btn.wa{background:var(--ok);color:#fff}
+.btn:disabled{opacity:.6;cursor:default}
+.btn:focus-visible,.big:focus-visible,.tile:focus-visible,.row:focus-visible,.tabbar button:focus-visible,.lang button:focus-visible,.seg button:focus-visible,.chip:focus-visible,input:focus-visible,select:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+.progress{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:10px 0 4px}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+.sect{display:flex;align-items:baseline;justify-content:space-between;margin:18px 0 8px}
+.sect h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.feed{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.feed li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.feed li:last-child{border-bottom:0}
+.feed .d{width:8px;height:8px;border-radius:50%;background:var(--muted);transform:translateY(-1px)}
+.feed .d.acc{background:var(--accent)}.feed .d.ok{background:var(--ok)}.feed .d.info{background:var(--info)}
+.feed time{color:var(--muted);font-size:12px;white-space:nowrap}
+.feed li.new{animation:hl 2.2s ease-out}
+@keyframes hl{0%{background:var(--accent-soft)}100%{background:transparent}}
+.seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:4px 0 12px}
+.seg::-webkit-scrollbar{display:none}
+.seg button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--app);border-color:var(--ink)}
+.list{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 12px;text-align:left;cursor:pointer;width:100%}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;background:var(--accent-soft);color:var(--accent)}
+.av.b{background:var(--info-soft);color:var(--info);border-radius:12px}
+.row .nm{font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .mt{display:block;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap;background:var(--line);color:var(--muted)}
+.pill.acc{background:var(--accent-soft);color:var(--accent)}.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.info{background:var(--info-soft);color:var(--info)}.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.found{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:12px;display:grid;gap:6px}
+.found .top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.found b{display:block}
+.found small{color:var(--muted);font-size:13px}
+.found .msg{font-size:13px;color:var(--muted);background:var(--app);border-radius:10px;padding:8px 10px}
+.empty{color:var(--muted);text-align:center;padding:24px 8px;font-size:14px}
+.reset{display:block;margin:22px auto 0;border:0;background:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer}
+
+/* sheet */
+.scrim{position:absolute;inset:0;background:rgba(15,12,8,.42);display:flex;align-items:flex-end;z-index:5;animation:fade .18s ease-out}
+.sheet{background:var(--app);width:100%;max-height:92%;border-radius:24px 24px 0 0;display:flex;flex-direction:column;animation:up .22s ease-out}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:8px auto 2px}
+.sheet .sh{display:flex;align-items:center;gap:10px;padding:8px 18px 6px}
+.sheet .sh h3{font-family:var(--f-display);font-size:22px;margin:0;line-height:1.15}
+.sheet .x{margin-left:auto;border:0;background:var(--card);border:1px solid var(--line);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;flex:none}
+.sheet .sb{overflow-y:auto;padding:6px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.scrim,.sheet,.feed li.new,.bub{animation:none!important}.progress i{transition:none}}
+.field{display:grid;gap:5px;margin-bottom:12px}
+.field label{font-size:13px;font-weight:700;color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;font:inherit;font-size:16px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:11px 12px;min-width:0}
+.field textarea{resize:vertical;line-height:1.4}
+.tick{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:0 0 14px;cursor:pointer;color:var(--ink)}
+.tick input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin:1px 0 0}
+.btn.sm{padding:6px 12px;font-size:13px}
+.row[data-boss] .nm,.row[data-boss] .mt{white-space:normal}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-size:14px;font-weight:600;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.stepper{display:flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);width:max-content}
+.stepper button{border:0;background:none;width:46px;height:44px;font-size:22px;cursor:pointer}
+.stepper output{min-width:40px;text-align:center;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.cta{width:100%;border:0;border-radius:14px;padding:15px;font-weight:700;font-size:17px;background:var(--accent);color:var(--accent-ink);cursor:pointer;margin-top:6px}
+.cta.dark{background:var(--ink);color:var(--app)}
+.phone{background:var(--chat);border-radius:18px;padding:12px 10px;display:flex;flex-direction:column;gap:6px;min-height:120px}
+.phone .ph{font-size:12px;color:var(--muted);text-align:center;margin-bottom:2px}
+.bub{max-width:86%;padding:8px 11px;border-radius:14px;font-size:14px;background:var(--bubble-in);white-space:pre-wrap;animation:up .18s ease-out}
+.bub.out{align-self:flex-end;background:var(--bubble-out)}
+.bub.in{align-self:flex-start}
+.result{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:12px}
+.result .ok{color:var(--ok);font-weight:700}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:15px;margin:8px 0}
+.kv span:nth-child(odd){color:var(--muted)}
+.person{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.person:last-child{border-bottom:0}
+.person .av{width:40px;height:40px;font-size:14px}
+.person b{display:block}
+.person small{color:var(--muted);font-size:13px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.toast{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--app);padding:10px 14px;border-radius:12px;font-size:14px;width:max-content;max-width:88%;text-align:center;z-index:9;animation:fade .2s}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <aside class="guide">
+    <div class="eyebrow">Prototype for Wilson</div>
+    <h1>Hostel Headhunter</h1>
+    <p>Your tenants become a live list of workers. Bosses ask, the assistant finds who's free, and you see it all here.</p>
+    <ol>
+      <li>Tap <b>New tenant moved in</b></li>
+      <li>Tap <b>A boss needs workers</b></li>
+      <li>Tap <b>Send check-in now</b></li>
+    </ol>
+    <small>Sample people. Nothing is sent to anyone. Switch to 中文 at the top.</small>
+  </aside>
+
+  <main class="app" id="app">
+    <header class="bar">
+      <div class="logo">HH</div>
+      <div><b data-t="appName"></b><small data-t="proto"></small></div>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="zh">中文</button>
+      </div>
+    </header>
+    <div class="screen" id="screen"></div>
+    <nav class="tabbar" role="tablist">
+      <button role="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span data-t="tHome"></span></button>
+      <button role="tab" data-tab="workers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M16.5 14.6c2.4.2 4.2 1.9 5 5.4"/></svg><span data-t="tWorkers"></span><span class="pip" id="pip-w" hidden></span></button>
+      <button role="tab" data-tab="bosses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg><span data-t="tBosses"></span><span class="pip" id="pip-b" hidden></span></button>
+    </nav>
+  </main>
+</div>
+
+<script>
+/* ---------- words ---------- */
+const W={
+ en:{appName:'Hostel Headhunter',proto:'Prototype · sample data',tHome:'Home',tWorkers:'Workers',tBosses:'Bosses',
+  hi:'Hi Wilson',noteDemo:'Prototype with sample people. Nothing is sent. Try the 3 buttons below.',ok:'OK',
+  lookTile:'Looking for work',lookSub:'tenants ready to start',bossTile:'Bosses need workers',bossSub:'still need people',
+  newTenant:'New tenant moved in',newTenantS:'The assistant chats with them for you',newBoss:'A boss needs workers',newBossS:'Find tenants who fit, in seconds',
+  checkT:'Monthly check-in',checkP:'The assistant asks every tenant who agreed, on WhatsApp: "How\'s work? Want a new job? Any friends looking for work?"',checkBtn:'Send check-in now',checkLast:'Last sent {t}',sending:'Sending to {n} tenants…',
+  latest:'Latest',reset:'Reset prototype',
+  workersH:'Workers',fLook:'Looking',fMatch:'Matched',fWork:'Working',fAll:'All',
+  bossesH:'Bosses',needSec:'Need workers',foundSec:'Companies hiring',foundNote:'Saw a hiring post or a "Hiring" sign? Add it and the assistant writes the message. WhatsApp doesn\'t let bots message a company first, so you tap Send.',pasteBtn:'+ Add job post',pasteT:'Add a job post you saw',pasteL:'Paste the post (or type what the sign says)',readBtn:'Let the assistant read it',reading:'Reading…',readOk:'Got it ✓',company:'Company',msgReady:'Message ready to send',addList:'Add to Companies hiring',addedFound:'Added. Tap Send when ready.',srcFb:'From a Facebook post',srcSign:'From a "Hiring" sign photo',srcPaste:'Added by your team',waitBoss:'Sent, boss deciding',near:'near the boss ✓',send:'Send',sent:'Sent ✓',replied:'Replied: "send me profiles"',
+  sLooking:'Looking for work',sMatched:'Matched',sWorking:'Working',sNew:'Chatting',
+  ofFound:'{a} of {b} found',filled:'Filled ✓',
+  nameL:'Name',phoneL:'Phone',hostelL:'Hostel',rentL:'Rent a month',jobL:'Job now (optional)',jobPh:'e.g. general worker, cook',saveT:'Save and let the assistant chat',
+  needName:'Type a name first',consentL:'Tenant agreed to get WhatsApp messages from us (they can reply STOP anytime)',needConsent:'Tick the box first: WhatsApp only allows messages to people who agreed.',chatting:'The assistant is chatting with {n} on WhatsApp',ready:'Profile ready ✓',addedLook:'{n} is now in your list of people looking for work.',addedWork:'{n} is happy in their job. The assistant checks in again next month.',done:'Done',skip:'Skip',
+  bossL:'Boss or company',bossPh:"e.g. Lee's Kopitiam",jobQ:'What job?',howMany:'How many?',areaL:'Area',findBtn:'Find workers',
+  asking:'Asking {n} tenants who fit…',saidYes:'{n} said yes',saidYes1:'1 said yes',none:'Nobody free for this job right now. The assistant will WhatsApp the boss as soon as someone says yes.',sendBoss:'Send these to the boss',sentBoss:'Sent to the boss on WhatsApp ✓',
+  lives:'Lives at',canDo:'Can do',rent:'Rent',phone:'Phone',status:'Status',workStatus:'Work status',matchedWith:'Matched with {b}',friendOf:'Friend of',gotJob:'Got the job ✓',notWork:"Didn't work out",chatH:'Chat with the assistant',
+  wa:'WhatsApp',waToast:'On a real phone this opens WhatsApp with {n}.',sendToast:'On a real phone this opens WhatsApp with the message ready.',
+  bed:'bed',ago:{now:'just now',m:'{n} min ago',h:'{n} h ago',d:'{n} d ago'},
+  bossNeeds:'{j} × {c}',picks:'Workers sent',findMore:'Find more workers',
+  f_moved:'{n} moved into {h}. The assistant is chatting.',f_looking:'{n} is looking for work: {j}',f_happy:'{n} is happy at work',f_boss:'{b} needs workers: {j} × {c}',f_yes:'{n} said yes to {b}',f_hired:'{n} started work at {b}. Bed kept.',f_check:'Check-in sent to {c} tenants',f_wants:'{n} wants a new job',f_friend:'{n} sent a friend: {f}',f_found:'{c} companies hiring added',f_replied:'{b} replied: "send me profiles"',f_back:'{n} is looking for work again'},
+ zh:{appName:'宿舍猎头',proto:'试用版 · 示范资料',tHome:'首页',tWorkers:'工人',tBosses:'老板',
+  hi:'Wilson 你好',noteDemo:'这是试用版，人名都是示范，不会真的发信息。试试下面三个按钮。',ok:'好',
+  lookTile:'在找工的人',lookSub:'随时可以上工',bossTile:'要请人的老板',bossSub:'还缺人',
+  newTenant:'新租客入住',newTenantS:'助理会帮你跟他聊',newBoss:'有老板要请人',newBossS:'几秒钟找到适合的租客',
+  checkT:'每月问候',checkP:'助理在 WhatsApp 问每位已同意的租客：「最近工作怎样？想换工吗？有朋友在找工作吗？」',checkBtn:'现在发送问候',checkLast:'上次发送：{t}',sending:'正在发给 {n} 位租客…',
+  latest:'最新动态',reset:'重置试用版',
+  workersH:'工人',fLook:'找工中',fMatch:'已配对',fWork:'有工作',fAll:'全部',
+  bossesH:'老板',needSec:'要请人',foundSec:'在请人的公司',foundNote:'看到请人的贴文或招牌？加进来，助理会写好信息。WhatsApp 不允许机器人先联络公司，所以由你按「发送」。',pasteBtn:'+ 加请人贴文',pasteT:'加一个看到的请人贴文',pasteL:'贴上贴文内容（或打下招牌上写的）',readBtn:'让助理读一读',reading:'正在读…',readOk:'读好了 ✓',company:'公司',msgReady:'信息已写好',addList:'加入「在请人的公司」',addedFound:'已加入，准备好就按发送。',srcFb:'来自 Facebook 贴文',srcSign:'来自「请人」招牌照片',srcPaste:'你的团队加的',waitBoss:'已推荐，等老板决定',near:'离老板近 ✓',send:'发送',sent:'已发送 ✓',replied:'已回复：「发资料给我」',
+  sLooking:'找工中',sMatched:'已配对',sWorking:'有工作',sNew:'聊天中',
+  ofFound:'已找到 {a}/{b}',filled:'已请满 ✓',
+  nameL:'名字',phoneL:'电话',hostelL:'宿舍',rentL:'月租',jobL:'现在的工作（可不填）',jobPh:'例如：杂工、厨师',saveT:'保存，让助理去聊',
+  needName:'请先输入名字',consentL:'租客同意接收我们的 WhatsApp 信息（随时可回复 STOP 停止）',needConsent:'请先打勾：WhatsApp 只允许发信息给同意的人。',chatting:'助理正在 WhatsApp 和 {n} 聊天',ready:'资料完成 ✓',addedLook:'{n} 已加入「在找工的人」名单。',addedWork:'{n} 目前工作很好，助理下个月会再问候。',done:'完成',skip:'跳过',
+  bossL:'老板／公司',bossPh:'例如：Lee\'s Kopitiam',jobQ:'请什么工？',howMany:'要几个？',areaL:'地区',findBtn:'找工人',
+  asking:'正在问 {n} 位适合的租客…',saidYes:'{n} 人说可以',saidYes1:'1 人说可以',none:'目前没有人适合这份工。一有人说可以，助理会马上 WhatsApp 通知老板。',sendBoss:'把名单发给老板',sentBoss:'已经 WhatsApp 发给老板 ✓',
+  lives:'住在',canDo:'会做',rent:'月租',phone:'电话',status:'状态',workStatus:'工作身份',matchedWith:'已配对：{b}',friendOf:'介绍人',gotJob:'已上工 ✓',notWork:'没成功',chatH:'和助理的聊天',
+  wa:'WhatsApp',waToast:'真机上会打开和 {n} 的 WhatsApp。',sendToast:'真机上会打开 WhatsApp，信息已经写好。',
+  bed:'床位',ago:{now:'刚刚',m:'{n} 分钟前',h:'{n} 小时前',d:'{n} 天前'},
+  bossNeeds:'{j} × {c}',picks:'已推荐的工人',findMore:'再找工人',
+  f_moved:'{n} 入住 {h}，助理正在聊天。',f_looking:'{n} 在找工：{j}',f_happy:'{n} 工作稳定',f_boss:'{b} 要请人：{j} × {c}',f_yes:'{n} 答应了 {b}',f_hired:'{n} 已在 {b} 上工，床位保住了。',f_check:'已向 {c} 位租客发送问候',f_wants:'{n} 想换工作',f_friend:'{n} 介绍了朋友：{f}',f_found:'新增 {c} 间在请人的公司',f_replied:'{b} 回复：「发资料给我」',f_back:'{n} 又在找工了'}
+};
+const JOBS={gw:{en:'General worker',zh:'杂工',ms:'Pekerja am'},construction:{en:'Construction',zh:'建筑工',ms:'Pembinaan'},kitchen:{en:'Kitchen / F&B',zh:'厨房餐饮',ms:'Dapur / F&B'},cleaner:{en:'Cleaner',zh:'清洁工',ms:'Pembersih'},driver:{en:'Driver',zh:'司机',ms:'Pemandu'},factory:{en:'Factory',zh:'工厂',ms:'Kilang'},security:{en:'Security',zh:'保安',ms:'Pengawal'},shop:{en:'Shop / retail',zh:'店员',ms:'Kedai'}};
+const JOBKEYS=Object.keys(JOBS);
+const HOSTELS=[['H03','Padungan'],['H07','Batu Kawa'],['H12','Jalan Padungan'],['H18','Tabuan Jaya'],['H21','Matang'],['H25','Petra Jaya'],['H33','Stutong'],['H40','Kota Samarahan'],['H52','Siburan'],['H61','Pending']];
+const hName=c=>{const h=HOSTELS.find(x=>x[0]===c);return h?h[0]+' '+h[1]:c};
+const hArea=c=>(HOSTELS.find(x=>x[0]===c)||[,''])[1];
+const where=x=>x.friendOf?t('friendOf')+' '+x.friendOf.split(' ')[0]:hName(x.hostel);
+
+let lang='en';
+try{lang=localStorage.getItem('hh-lang')||((navigator.language||'').startsWith('zh')?'zh':'en')}catch(e){}
+const t=(k,v={})=>{let s=W[lang][k]??W.en[k]??k;if(typeof s!=='string')return s;return s.replace(/\{(\w+)\}/g,(_,x)=>v[x]??'')};
+const jl=k=>JOBS[k]?JOBS[k][lang]:k;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=s=>document.querySelector(s);
+const initials=n=>n.split(/\s+/).filter(w=>/^[A-Za-z一-鿿]/.test(w)&&!/^(anak|bin|binti|a\/l|a\/p)$/i.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';
+function ago(ts){const d=(Date.now()-ts)/60000,a=W[lang].ago;if(d<1)return a.now;if(d<60)return a.m.replace('{n}',Math.round(d));if(d<1440)return a.h.replace('{n}',Math.round(d/60));return a.d.replace('{n}',Math.round(d/1440))}
+
+/* ---------- state ---------- */
+let S;let uid=1;const nid=()=>'x'+(Date.now().toString(36))+(uid++);
+function seed(){
+  const now=Date.now(),H=3600e3;
+  const T=(name,hostel,bed,jobs,status,mins,extra={})=>({id:nid(),name,hostel,bed,rent:250,phone:'01'+Math.floor(1+Math.random()*9)+'-••• '+String(1000+Math.floor(Math.random()*8999)),jobs,status,ws:'Malaysian',ts:now-mins*60e3,...extra});
+  const tenants=[
+    T('Jimmy anak Lawai','H07','2A',['gw','construction'],'looking',50),
+    T('Siti Aminah','H03','1C',['kitchen','cleaner'],'looking',180),
+    T('Mohd Faizal','H18','3B',['driver','gw'],'looking',1500),
+    T('Dennis Jugah','H07','1B',['security','gw'],'looking',4000),
+    T('Ah Keong','H33','5A',['kitchen'],'looking',300),
+    T('Lina Tan','H12','4B',['kitchen','shop'],'looking',2900),
+    T('Rizal Hamdan','H07','3C',['gw','cleaner'],'working',9000,{employer:'Tyre shop'}),
+    T('Budi Santoso','H21','4A',['construction','gw'],'matched',600,{ws:'Own work permit'}),
+    T('Nur Aisyah','H12','2C',['shop'],'working',12000,{employer:'Mini market'}),
+    T('Peter Ngau','H25','2B',['factory','gw'],'working',2000,{employer:'Food factory, Petra Jaya'}),
+    T('Kumar R.','H52','2A',['construction','factory'],'working',20000,{employer:'Workshop'})
+  ];
+  const budi=tenants[7],peter=tenants[9];
+  const bosses=[
+    {id:nid(),name:'Hardware shop, Matang',job:'gw',count:2,area:'Matang',picks:[budi.id],status:'open',ts:now-11*H},
+    {id:nid(),name:'Food factory, Petra Jaya',job:'factory',count:1,area:'Petra Jaya',picks:[peter.id],status:'filled',ts:now-40*H}
+  ];
+  budi.matchBoss=bosses[0].id;peter.matchBoss=bosses[1].id;
+  const found=[
+    {id:nid(),name:'Car wash, Jalan Stutong',job:'gw',count:2,area:'Stutong',src:'fb',state:'new',msg:"Hi! Saw you're hiring car wash workers. We have workers living near Stutong, ready to start. Want me to send a few profiles? – Wilson"},
+    {id:nid(),name:'Bakery, Tabuan Jaya',job:'kitchen',count:1,area:'Tabuan Jaya',src:'sign',state:'new',msg:"Hi! Saw your kitchen helper vacancy. We have experienced kitchen workers 5 min away. Shall I send profiles? – Wilson"}
+  ];
+  const feed=[
+    {k:'f_found',v:{c:2},c:'info',ts:now-20*60e3},
+    {k:'f_looking',v:{n:'Jimmy anak Lawai',jobs:['gw','construction']},c:'acc',ts:now-50*60e3},
+    {k:'f_looking',v:{n:'Siti Aminah',jobs:['kitchen','cleaner']},c:'acc',ts:now-3*H},
+    {k:'f_yes',v:{n:'Budi Santoso',b:'Hardware shop, Matang'},c:'ok',ts:now-10*H},
+    {k:'f_boss',v:{b:'Hardware shop, Matang',c:2,job:'gw'},c:'info',ts:now-11*H},
+    {k:'f_hired',v:{n:'Peter Ngau',b:'Food factory, Petra Jaya'},c:'ok',ts:now-30*H}
+  ];
+  return{tenants,bosses,found,feed,lastCheck:now-26*24*H,noteHidden:false};
+}
+function load(){try{const s=JSON.parse(localStorage.getItem('hh-state-v3'));if(s&&s.tenants)return s}catch(e){}return seed()}
+function save(){try{localStorage.setItem('hh-state-v3',JSON.stringify(S))}catch(e){}}
+S=load();
+const tid=id=>S.tenants.find(x=>x.id===id),bid=id=>S.bosses.find(x=>x.id===id);
+function feedText(f){const v={...f.v};if(v.jobs)v.j=v.jobs.map(jl).join(', ');if(v.job)v.j=jl(v.job);return t(f.k,v)}
+function push(k,v,c){S.feed.unshift({k,v,c,ts:Date.now(),fresh:true});S.feed=S.feed.slice(0,40)}
+
+/* ---------- shell ---------- */
+let tab='home',wFilter='looking';
+function applyLang(){document.documentElement.lang=lang==='zh'?'zh':'en';document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===lang))}
+document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem('hh-lang',lang)}catch(e){}applyLang();render();if(curSheet)curSheet()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>go(b.dataset.tab));
+function go(x){tab=x;render();$('#screen').scrollTop=0}
+const needs=b=>b.status==='open'&&b.picks.length<b.count;
+const bossPill=b=>b.status==='filled'?['ok',t('filled')]:needs(b)?['info',t('ofFound',{a:b.picks.length,b:b.count})]:['warn',t('waitBoss')];
+function counts(){return{look:S.tenants.filter(x=>x.status==='looking').length,boss:S.bosses.filter(needs).length}}
+function render(){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
+  const c=counts();$('#pip-w').hidden=!c.look;$('#pip-w').textContent=c.look;$('#pip-b').hidden=!c.boss;$('#pip-b').textContent=c.boss;
+  $('#screen').innerHTML=tab==='home'?home():tab==='workers'?workers():bosses();
+  S.feed.forEach(f=>delete f.fresh);save();
+}
+const ic={user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="8" r="4"/><path d="M3 21c.9-4 3.6-6 7-6 1.5 0 2.8.4 3.9 1.1"/><path d="M19 15v6M16 18h6"/></svg>',boss:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M12 11v5M9.5 13.5h5"/></svg>'};
+
+function home(){
+  const c=counts();
+  const d=new Date().toLocaleDateString(lang==='zh'?'zh-CN':'en-MY',{weekday:'long',day:'numeric',month:'long'});
+  return `<h2>${esc(t('hi'))}</h2><p class="date">${esc(d)}</p>
+  ${S.noteHidden?'':`<div class="note"><span>${esc(t('noteDemo'))}</span><button type="button" data-act="hideNote">${esc(t('ok'))}</button></div>`}
+  <div class="tiles">
+    <button type="button" class="tile work" data-act="toWorkers"><span class="n">${c.look}</span><span class="l">${esc(t('lookTile'))}</span><span class="s">${esc(t('lookSub'))}</span></button>
+    <button type="button" class="tile boss" data-act="toBosses"><span class="n">${c.boss}</span><span class="l">${esc(t('bossTile'))}</span><span class="s">${esc(t('bossSub'))}</span></button>
+  </div>
+  <button type="button" class="big primary" data-act="newTenant">${ic.user}<span>${esc(t('newTenant'))}<small>${esc(t('newTenantS'))}</small></span></button>
+  <button type="button" class="big second" data-act="newBoss">${ic.boss}<span>${esc(t('newBoss'))}<small>${esc(t('newBossS'))}</small></span></button>
+  <div class="panel" id="checkPanel"><h3>${esc(t('checkT'))}</h3><p>${esc(t('checkP'))}</p>
+    <div id="checkBody"><button type="button" class="btn acc" data-act="checkin">${esc(t('checkBtn'))}</button> <small style="color:var(--muted);font-size:12px;margin-left:6px">${esc(t('checkLast',{t:ago(S.lastCheck)}))}</small></div></div>
+  <div class="sect"><h3>${esc(t('latest'))}</h3></div>
+  <ul class="feed">${S.feed.slice(0,8).map(f=>`<li class="${f.fresh?'new':''}"><span class="d ${f.c||''}"></span><span>${esc(feedText(f))}</span><time>${esc(ago(f.ts))}</time></li>`).join('')}</ul>
+  <button type="button" class="reset" data-act="reset">${esc(t('reset'))}</button>`;
+}
+const ST={looking:['sLooking','acc'],matched:['sMatched','info'],working:['sWorking','ok'],new:['sNew','warn']};
+function workers(){
+  const f={looking:x=>x.status==='looking',matched:x=>x.status==='matched',working:x=>x.status==='working',all:()=>true};
+  const segs=[['looking','fLook'],['matched','fMatch'],['working','fWork'],['all','fAll']];
+  const list=S.tenants.filter(f[wFilter]).sort((a,b)=>b.ts-a.ts);
+  return `<h2>${esc(t('workersH'))}</h2>
+  <div class="seg">${segs.map(([k,l])=>`<button type="button" data-wf="${k}" aria-pressed="${wFilter===k}">${esc(t(l))} ${S.tenants.filter(f[k]).length}</button>`).join('')}</div>
+  <div class="list">${list.length?list.map(x=>`<button type="button" class="row" data-tenant="${x.id}"><span class="av">${esc(initials(x.name))}</span><span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(where(x))} · ${esc(x.jobs.map(jl).join(', ')||'—')}</span></span><span class="pill ${ST[x.status][1]}">${esc(t(ST[x.status][0]))}</span></button>`).join(''):`<div class="empty">—</div>`}</div>`;
+}
+function bosses(){
+  const open=S.bosses.slice().sort((a,b)=>(needs(a)?0:1)-(needs(b)?0:1)||b.ts-a.ts);
+  return `<h2>${esc(t('bossesH'))}</h2>
+  <div class="sect" style="margin-top:8px"><h3>${esc(t('needSec'))}</h3></div>
+  <div class="list">${open.map(b=>`<button type="button" class="row" data-boss="${b.id}"><span class="av b">${esc(initials(b.name))}</span><span><span class="nm">${esc(b.name)}</span><span class="mt">${esc(t('bossNeeds',{c:b.count,j:jl(b.job)}))} · ${esc(b.area)}</span></span><span class="pill ${bossPill(b)[0]}">${esc(bossPill(b)[1])}</span></button>`).join('')}</div>
+  <div class="sect"><h3>${esc(t('foundSec'))}</h3><button type="button" class="btn ghost sm" data-act="paste">${esc(t('pasteBtn'))}</button></div>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 8px">${esc(t('foundNote'))}</p>
+  <div class="list">${S.found.length?S.found.map(f=>`<div class="found"><div class="top"><div><b>${esc(f.name)}</b><small>${esc(t('bossNeeds',{c:f.count,j:jl(f.job)}))} · ${esc(f.area)}<br>${esc(t({fb:'srcFb',sign:'srcSign'}[f.src]||'srcPaste'))}</small></div>${f.state==='new'?`<button type="button" class="btn wa" data-send="${f.id}">${esc(t('send'))}</button>`:`<span class="pill ${f.state==='sent'?'info':'ok'}">${esc(f.state==='sent'?t('sent'):t('replied'))}</span>`}</div>${f.state==='new'?`<div class="msg">${esc(f.msg)}</div>`:''}</div>`).join(''):`<div class="empty">—</div>`}</div>`;
+}
+
+/* ---------- interactions ---------- */
+$('#screen').addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'),wf=e.target.closest('[data-wf]'),tn=e.target.closest('[data-tenant]'),bs=e.target.closest('[data-boss]'),sd=e.target.closest('[data-send]');
+  if(wf){wFilter=wf.dataset.wf;render();return}
+  if(tn){openTenant(tn.dataset.tenant);return}
+  if(bs){openBoss(bs.dataset.boss);return}
+  if(sd){const f=S.found.find(x=>x.id===sd.dataset.send);f.state='sent';render();toast(t('sendToast'));
+    setTimeout(()=>{f.state='replied';const b={id:nid(),name:f.name,job:f.job,count:f.count,area:f.area,picks:[],status:'open',ts:Date.now()};S.bosses.unshift(b);push('f_replied',{b:f.name},'info');render();toast(t('f_replied',{b:f.name}))},3000);return}
+  if(!a)return;
+  const k=a.dataset.act;
+  if(k==='hideNote'){S.noteHidden=true;render()}
+  if(k==='toWorkers'){wFilter='looking';go('workers')}
+  if(k==='toBosses')go('bosses');
+  if(k==='newTenant')sheetTenant();
+  if(k==='newBoss')sheetBoss();
+  if(k==='checkin')runCheckin(a);
+  if(k==='paste')sheetPaste();
+  if(k==='reset'){S=seed();save();wFilter='looking';go('home');toast('✓')}
+});
+let toastT;function toast(m){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=m;$('#app').appendChild(d);clearTimeout(toastT);toastT=setTimeout(()=>d.remove(),2600)}
+
+/* ---------- sheet ---------- */
+let curSheet=null;
+function sheet(title,body,rerender){closeSheet();curSheet=rerender||null;const s=document.createElement('div');s.className='scrim';s.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="grab"></div><div class="sh"><h3>${esc(title)}</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="sb">${body}</div></div>`;
+  s.addEventListener('click',e=>{if(e.target===s||e.target.closest('.x'))closeSheet()});$('#app').appendChild(s);return s.querySelector('.sb')}
+function closeSheet(){document.querySelectorAll('.scrim').forEach(x=>x.remove());curSheet=null;timers.forEach(clearTimeout);timers=[]}
+let timers=[];const later=(fn,ms)=>timers.push(setTimeout(fn,ms));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+
+/* new tenant */
+function guessJob(s){s=(s||'').toLowerCase();const M=[['construction',/construct|tukang|bina|建筑|装修/],['kitchen',/cook|chef|kitchen|waiter|waitress|masak|dapur|f&b|厨|餐|服务员/],['cleaner',/clean|cuci|pembersih|清洁/],['driver',/driver|lorry|pemandu|司机|送货/],['factory',/factory|kilang|operator|工厂/],['security',/security|guard|pengawal|保安/],['shop',/cashier|shop|retail|kedai|店|收银/],['gw',/general|worker|helper|buruh|pekerja am|杂工|工人/]];const m=M.find(([,r])=>r.test(s));return m?m[0]:'gw'}
+function sheetTenant(){
+  const body=sheet(t('newTenant'),`<form id="ft">
+    <div class="field"><label for="tn">${esc(t('nameL'))}</label><input id="tn" autocomplete="off" value="Ali bin Ahmad"></div>
+    <div class="field"><label for="tp">${esc(t('phoneL'))}</label><input id="tp" inputmode="tel" autocomplete="off" value="011-2000 3456"></div>
+    <div class="two"><div class="field"><label for="th">${esc(t('hostelL'))}</label><select id="th">${HOSTELS.map(h=>`<option value="${h[0]}"${h[0]==='H07'?' selected':''}>${esc(h[0]+' '+h[1])}</option>`).join('')}</select></div>
+    <div class="field"><label for="tr">${esc(t('rentL'))}</label><input id="tr" inputmode="numeric" value="RM250"></div></div>
+    <div class="field"><label for="tj">${esc(t('jobL'))}</label><input id="tj" autocomplete="off" placeholder="${esc(t('jobPh'))}" value="General worker"></div>
+    <label class="tick"><input type="checkbox" id="tc" checked><span>${esc(t('consentL'))}</span></label>
+    <button class="cta">${esc(t('saveT'))}</button></form>`);
+  body.querySelector('#ft').onsubmit=e=>{e.preventDefault();const name=body.querySelector('#tn').value.trim();if(!name){toast(t('needName'));return}
+    if(!body.querySelector('#tc').checked){toast(t('needConsent'));return}
+    const job=guessJob(body.querySelector('#tj').value);const second=job==='gw'?'construction':'gw';
+    const x={id:nid(),name,phone:body.querySelector('#tp').value.trim()||'—',hostel:body.querySelector('#th').value,bed:'2B',rent:parseInt(body.querySelector('#tr').value.replace(/\D/g,''))||250,jobs:[],status:'new',ws:'Malaysian',ts:Date.now(),employer:body.querySelector('#tj').value.trim()};
+    S.tenants.unshift(x);push('f_moved',{n:x.name,h:hName(x.hostel)},'info');save();render();
+    playOnboarding(x,[job,second]);};
+}
+function playOnboarding(x,jobs){
+  const first=x.name.split(' ')[0];
+  const body=sheet(t('chatting',{n:first}),`<div class="phone" id="ph"><div class="ph">WhatsApp · ${esc(x.name)} · ${esc(x.phone)}</div></div><div id="res"></div><button type="button" class="cta dark" id="skip" style="margin-top:12px">${esc(t('skip'))}</button>`);
+  const ph=body.querySelector('#ph');
+  const steps=[['in',`Hi ${first}! 👋 Welcome to Wilson's hostel 🏠\nI can help you find work while you stay with us.\nType STAFF anytime to talk to a person.\nEnglish / Bahasa / 中文?`],['out','Bahasa'],
+    ['in','Boleh kami kongsi profil kerja awak dengan bos yang cari pekerja? (taip STOP bila-bila masa)'],['out','Ya, boleh'],
+    ['in','Kerja apa yang awak pernah buat beberapa tahun ni?'],['out',jobs.map(j=>JOBS[j].ms).join(', ')],
+    ['in','Awak warganegara Malaysia, atau ada permit kerja sendiri?'],['out','Warganegara Malaysia'],
+    ['in','Awak sedang cari kerja sekarang?'],['out','Ya, kalau gaji lebih'],
+    ['in','Terima kasih! Profil awak dah disimpan ✓\nSaya akan mesej bila ada bos berdekatan cari pekerja.']];
+  let i=0;
+  const finish=()=>{timers.forEach(clearTimeout);timers=[];while(i<steps.length)bubble(steps[i++]);
+    x.jobs=jobs;x.status='looking';x.ts=Date.now();x.chat=steps;push('f_looking',{n:x.name,jobs},'acc');save();render();
+    body.querySelector('#skip').remove();
+    body.querySelector('#res').innerHTML=`<div class="result"><div class="ok">${esc(t('ready'))}</div><div class="kv"><span>${esc(t('canDo'))}</span><span>${esc(jobs.map(jl).join(', '))}</span><span>${esc(t('lives'))}</span><span>${esc(hName(x.hostel))}</span><span>${esc(t('status'))}</span><span>${esc(t('sLooking'))}</span></div><p style="margin:0;color:var(--muted);font-size:14px">${esc(t('addedLook',{n:first}))}</p></div><button type="button" class="cta" id="dn">${esc(t('done'))}</button>`;
+    body.querySelector('#dn').onclick=closeSheet;};
+  function bubble([d,txt]){const b=document.createElement('div');b.className='bub '+d;b.textContent=txt;ph.appendChild(b);ph.parentElement.scrollTop=ph.parentElement.scrollHeight}
+  const tick=()=>{if(i>=steps.length){finish();return}bubble(steps[i++]);later(tick,i%2?900:700)};
+  later(tick,350);
+  body.querySelector('#skip').onclick=finish;
+}
+
+/* boss */
+function sheetBoss(prefill){
+  let job=prefill?.job||'gw',count=prefill?.count||2;
+  const areas=[...new Set(HOSTELS.map(h=>h[1]))];
+  const body=sheet(t('newBoss'),`<form id="fb">
+    <div class="field"><label for="bn">${esc(t('bossL'))}</label><input id="bn" autocomplete="off" placeholder="${esc(t('bossPh'))}" value="${esc(prefill?.name||"Lee's Kopitiam")}"></div>
+    <div class="field"><label>${esc(t('jobQ'))}</label><div class="chips" id="bj">${JOBKEYS.map(k=>`<button type="button" class="chip" data-j="${k}" aria-pressed="${k===job}">${esc(jl(k))}</button>`).join('')}</div></div>
+    <div class="two"><div class="field"><label for="ba">${esc(t('areaL'))}</label><select id="ba">${areas.map(a=>`<option${a===(prefill?.area||'Batu Kawa')?' selected':''}>${esc(a)}</option>`).join('')}</select></div>
+    <div class="field"><label>${esc(t('howMany'))}</label><div class="stepper"><button type="button" data-n="-1" aria-label="Less">−</button><output id="bc">${count}</output><button type="button" data-n="1" aria-label="More">+</button></div></div></div>
+    <button class="cta">${esc(t('findBtn'))}</button></form><div id="bres"></div>`);
+  body.querySelector('#bj').onclick=e=>{const c=e.target.closest('[data-j]');if(!c)return;job=c.dataset.j;body.querySelectorAll('[data-j]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.j===job))};
+  body.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{count=Math.max(1,Math.min(20,count+ +b.dataset.n));body.querySelector('#bc').textContent=count});
+  body.querySelector('#fb').onsubmit=e=>{e.preventDefault();
+    const name=body.querySelector('#bn').value.trim()||"Lee's Kopitiam",area=body.querySelector('#ba').value;
+    let b=prefill?.id?bid(prefill.id):null;
+    if(!b){b={id:nid(),name,job,count,area,picks:[],status:'open',ts:Date.now()};S.bosses.unshift(b);push('f_boss',{b:name,c:count,job},'info')}
+    else{Object.assign(b,{job,count,area})}
+    save();render();
+    const fits=S.tenants.filter(x=>x.status==='looking'&&x.jobs.includes(job)).sort((p,q)=>(hArea(q.hostel)===area)-(hArea(p.hostel)===area));
+    const res=body.querySelector('#bres');body.querySelector('#fb').hidden=true;
+    const asked=fits.length;
+    if(!asked){res.innerHTML=`<div class="result"><p style="margin:0">${esc(t('none'))}</p></div><button type="button" class="cta" id="dn">${esc(t('done'))}</button>`;res.querySelector('#dn').onclick=closeSheet;return}
+    res.innerHTML=`<p style="margin:4px 0 0;font-weight:700">${esc(t('asking',{n:asked}))}</p><div class="progress"><i id="pg"></i></div>`;
+    later(()=>{const p=res.querySelector('#pg');if(p)p.style.width='100%'},60);
+    later(()=>{
+      const need=b.count-b.picks.length;const yes=fits.slice(0,Math.max(0,need));
+      if(!yes.length){res.innerHTML=`<div class="result"><p style="margin:0">${esc(t('none'))}</p></div><button type="button" class="cta" id="dn">${esc(t('done'))}</button>`;res.querySelector('#dn').onclick=closeSheet;return}
+      res.innerHTML=`<div class="result"><div class="ok">${esc(yes.length===1?t('saidYes1'):t('saidYes',{n:yes.length}))}</div>${yes.map(x=>`<div class="person"><span class="av">${esc(initials(x.name))}</span><span><b>${esc(x.name)}</b><small>${esc(where(x))}${hArea(x.hostel)===area&&!x.friendOf?' · '+esc(t('near')):''}<br>${esc(x.jobs.map(jl).join(', '))}</small></span><button type="button" class="btn wa" data-wa="${esc(x.name)}">${esc(t('wa'))}</button></div>`).join('')}</div><button type="button" class="cta" id="sb">${esc(t('sendBoss'))}</button>`;
+      res.querySelectorAll('[data-wa]').forEach(w=>w.onclick=()=>toast(t('waToast',{n:w.dataset.wa})));
+      res.querySelector('#sb').onclick=()=>{yes.forEach(x=>{x.status='matched';x.matchBoss=b.id;x.ts=Date.now();b.picks.push(x.id);push('f_yes',{n:x.name,b:b.name},'ok')});save();render();
+        res.querySelector('#sb').outerHTML=`<div class="result"><div class="ok">${esc(t('sentBoss'))}</div></div><button type="button" class="cta" id="dn">${esc(t('done'))}</button>`;res.querySelector('#dn').onclick=closeSheet};
+    },1700);
+  };
+}
+function openBoss(id){
+  const b=bid(id);const ps=b.picks.map(tid).filter(Boolean);
+  const body=sheet(b.name,`<div class="kv"><span>${esc(t('jobQ').replace(/[?？]/,''))}</span><span>${esc(t('bossNeeds',{c:b.count,j:jl(b.job)}))}</span><span>${esc(t('areaL'))}</span><span>${esc(b.area)}</span><span>${esc(t('status'))}</span><span>${esc(bossPill(b)[1])}</span></div>
+  <div class="sect"><h3>${esc(t('picks'))}</h3></div>
+  <div>${ps.length?ps.map(x=>`<div class="person"><span class="av">${esc(initials(x.name))}</span><span><b>${esc(x.name)}</b><small>${esc(where(x))} · ${esc(t(ST[x.status][0]))}</small></span>${x.status==='matched'?`<button type="button" class="btn ok" data-hire="${x.id}">${esc(t('gotJob'))}</button>`:''}</div>`).join(''):`<div class="empty">—</div>`}</div>
+  ${needs(b)?`<button type="button" class="cta" id="more">${esc(t('findMore'))}</button>`:''}`,()=>openBoss(id));
+  body.querySelectorAll('[data-hire]').forEach(h=>h.onclick=()=>{hire(tid(h.dataset.hire));openBoss(id)});
+  const m=body.querySelector('#more');if(m)m.onclick=()=>sheetBoss(b);
+}
+function hire(x){const b=bid(x.matchBoss);x.status='working';x.employer=b?b.name:'';x.ts=Date.now();if(b){const done=b.picks.map(tid).filter(p=>p&&p.status==='working').length;if(done>=b.count)b.status='filled'}push('f_hired',{n:x.name,b:b?b.name:''},'ok');save();render()}
+function openTenant(id){
+  const x=tid(id);const b=x.matchBoss?bid(x.matchBoss):null;
+  const chat=x.chat||[['in',`Hi ${x.name.split(' ')[0]}, how's work lately? 🙂`],['out',x.status==='looking'?'Looking for a new job':'All good, thanks']];
+  const body=sheet(x.name,`<div class="kv">${x.friendOf?`<span>${esc(t('friendOf'))}</span><span>${esc(x.friendOf)}</span>`:`<span>${esc(t('lives'))}</span><span>${esc(hName(x.hostel))}, ${esc(t('bed'))} ${esc(x.bed)}</span><span>${esc(t('rent'))}</span><span>RM${x.rent}</span>`}<span>${esc(t('phone'))}</span><span>${esc(x.phone)}</span><span>${esc(t('canDo'))}</span><span>${esc(x.jobs.map(jl).join(', ')||'—')}</span><span>${esc(t('workStatus'))}</span><span>${esc(x.ws)}</span><span>${esc(t('status'))}</span><span><span class="pill ${ST[x.status][1]}">${esc(t(ST[x.status][0]))}</span>${b&&x.status==='matched'?' '+esc(t('matchedWith',{b:b.name})):x.employer&&x.status==='working'?' · '+esc(x.employer):''}</span></div>
+  ${x.status==='matched'?`<div class="acts" style="margin:8px 0 4px"><button type="button" class="btn ok" id="hj">${esc(t('gotJob'))}</button><button type="button" class="btn ghost" id="nw">${esc(t('notWork'))}</button></div>`:''}
+  <div class="sect"><h3>${esc(t('chatH'))}</h3></div><div class="phone">${chat.slice(-6).map(([d,s])=>`<div class="bub ${d}">${esc(s)}</div>`).join('')}</div>
+  <div class="acts" style="margin-top:12px"><button type="button" class="btn wa" id="wa1">${esc(t('wa'))}</button></div>`,()=>openTenant(id));
+  const hj=body.querySelector('#hj');if(hj)hj.onclick=()=>{hire(x);openTenant(id)};
+  const nw=body.querySelector('#nw');if(nw)nw.onclick=()=>{if(b){b.picks=b.picks.filter(p=>p!==x.id);b.status='open'}x.status='looking';x.matchBoss=null;x.ts=Date.now();push('f_back',{n:x.name},'acc');save();render();openTenant(id)};
+  body.querySelector('#wa1').onclick=()=>toast(t('waToast',{n:x.name}));
+}
+
+/* add a job post staff saw (people browse; the assistant only reads what they paste) */
+const SAMPLE_POST="KAMI SEDANG MENGAMBIL PEKERJA!\nKedai Tayar Ah Seng, Batu Kawa\nPerlu 2 orang pekerja am. Gaji RM1,700 + OT\nWhatsApp 012-889 2301";
+function readPost(s){
+  const lines=s.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const name=(lines.find(l=>/kedai|shop|restoran|restaurant|cafe|kopitiam|bakery|sdn|bhd|enterprise|trading|workshop|kilang|factory|公司|餐|店/i.test(l))||lines[0]||'New company').replace(/[!.。！]+$/,'').slice(0,40);
+  const areas=[...new Set(HOSTELS.map(h=>h[1]).filter(a=>a!=='Pending'))];
+  const area=areas.find(a=>s.toLowerCase().includes(a.toLowerCase()))||'Kuching';
+  const m=s.match(/(\d+)\s*(orang|pekerja|workers?|staff|people|个|位|名)/i)||s.match(/(?:perlu|need|needs|cari|请)\s*(\d+)/i);
+  return{name,area,count:m?Math.max(1,Math.min(20,+m[1])):1,job:guessJob(s.replace(name,'')),phone:(s.match(/01\d[\d\s-]{7,11}\d/)||[''])[0]};
+}
+function sheetPaste(){
+  const body=sheet(t('pasteT'),`<div class="field"><label for="pt">${esc(t('pasteL'))}</label><textarea id="pt" rows="5">${esc(SAMPLE_POST)}</textarea></div><button type="button" class="cta" id="rd">${esc(t('readBtn'))}</button><div id="pres"></div>`);
+  body.querySelector('#rd').onclick=()=>{
+    const s=body.querySelector('#pt').value.trim();if(!s){toast(t('pasteL'));return}
+    const r=readPost(s),res=body.querySelector('#pres');body.querySelector('#rd').hidden=true;
+    res.innerHTML=`<p style="margin:10px 0 0;font-weight:700">${esc(t('reading'))}</p><div class="progress"><i id="rg"></i></div>`;
+    later(()=>{const p=res.querySelector('#rg');if(p)p.style.width='100%'},60);
+    later(()=>{
+      const msg=`Hi! Saw you're hiring (${JOBS[r.job].en} × ${r.count}). We have workers living near ${r.area}, ready to start. Want me to send a few profiles? – Wilson`;
+      res.innerHTML=`<div class="result"><div class="ok">${esc(t('readOk'))}</div><div class="kv"><span>${esc(t('company'))}</span><span>${esc(r.name)}</span><span>${esc(t('jobQ').replace(/[?？]/,''))}</span><span>${esc(t('bossNeeds',{c:r.count,j:jl(r.job)}))}</span><span>${esc(t('areaL'))}</span><span>${esc(r.area)}</span><span>${esc(t('phone'))}</span><span>${esc(r.phone||'—')}</span></div><small style="color:var(--muted);font-size:13px">${esc(t('msgReady'))}</small><div class="msg" style="font-size:14px;background:var(--app);border-radius:10px;padding:8px 10px;margin-top:4px">${esc(msg)}</div></div><button type="button" class="cta" id="al">${esc(t('addList'))}</button>`;
+      res.querySelector('#al').onclick=()=>{S.found.unshift({id:nid(),name:r.name,job:r.job,count:r.count,area:r.area,src:'paste',state:'new',msg});push('f_boss',{b:r.name,c:r.count,job:r.job},'info');save();closeSheet();go('bosses');toast(t('addedFound'))};
+    },1300);
+  };
+}
+
+/* check-in */
+const FRIENDS=['Joseph Nyaru','Hafiz Rahman','Agnes Liew','Samuel Bujang','Kelvin Wong'];
+function runCheckin(btn){
+  const box=$('#checkBody');const n=S.tenants.length;
+  box.innerHTML=`<p style="margin:0;font-weight:700;color:var(--ink)">${esc(t('sending',{n}))}</p><div class="progress"><i id="cpg"></i></div>`;
+  setTimeout(()=>{const p=$('#cpg');if(p)p.style.width='100%'},60);
+  setTimeout(()=>{
+    S.lastCheck=Date.now();push('f_check',{c:n},'info');
+    const working=S.tenants.filter(x=>x.status==='working');
+    const switcher=working[Math.floor(Math.random()*working.length)];
+    if(switcher){switcher.status='looking';switcher.ts=Date.now();switcher.chat=[['in',`Hi ${switcher.name.split(' ')[0]}, how's work lately? 🙂`],['out','Looking for a new job'],['in','Got it. I\'ll message you when a boss nearby is hiring.']];push('f_wants',{n:switcher.name},'acc')}
+    const pool=S.tenants.filter(x=>x.status!=='new'&&!x.friendOf).slice(0,6);const ref=pool[Math.floor(Math.random()*pool.length)];
+    const used=new Set(S.tenants.map(x=>x.name));const fname=FRIENDS.find(f=>!used.has(f));
+    if(ref&&fname){const job=ref.jobs[0]||'gw';const fr={id:nid(),name:fname,phone:'01'+Math.floor(1+Math.random()*9)+'-••• '+String(1000+Math.floor(Math.random()*8999)),hostel:ref.hostel,bed:'—',rent:0,jobs:[job,'gw'].filter((v,i,a)=>a.indexOf(v)===i),status:'looking',ws:'Malaysian',ts:Date.now(),friendOf:ref.name,chat:[['out',`Hi, I need a job. My friend ${ref.name.split(' ')[0]} sent me 👋`],['in','Welcome! What jobs have you done before?'],['out',JOBS[job].ms]]};
+      S.tenants.unshift(fr);push('f_friend',{n:ref.name,f:fname},'acc')}
+    save();render();
+  },1800);
+}
+
+applyLang();render();
+</script>
+</body>
+</html>
