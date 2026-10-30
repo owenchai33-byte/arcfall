@@ -95,6 +95,23 @@ button{font:inherit;color:inherit}
 @keyframes glow{0%,100%{background:transparent}50%{background:rgba(2,126,181,.1)}}
 .msg.in{animation:pop .2s ease-out}
 @keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.voice{display:flex;align-items:center;gap:8px;min-width:236px;padding:2px 0 0}
+.vplay{width:34px;height:34px;border:0;background:none;color:var(--wa-meta);display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.vplay svg{width:28px;height:28px}
+.wave{flex:1;display:flex;align-items:center;gap:2px;height:30px}
+.wave i{flex:1;max-width:3px;border-radius:2px;background:var(--wa-meta);opacity:.5}
+.wave i.on{background:#2a9fd8;opacity:1}
+.vav{width:42px;height:42px;border-radius:50%;background:#6b7a86;color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;position:relative;flex:none;font-family:var(--f-display)}
+.vav em{position:absolute;right:-4px;bottom:-2px;font-style:normal;font-size:13px}
+.vfoot{display:flex;justify-content:space-between;align-items:center;padding:0 0 0 42px;margin-top:-2px}
+.vfoot .meta{float:none;margin:0}
+.vdur{font-size:11.5px;color:var(--wa-meta)}
+.vtr{font-size:14.5px;line-height:1.4;border-top:1px solid var(--wa-line);padding-top:6px;margin-top:6px;white-space:pre-wrap}
+.vtr small{display:block;font-size:11.5px;color:var(--wa-meta);font-weight:600;letter-spacing:.02em;margin-bottom:1px}
+.wbtn.press{background:rgba(2,126,181,.18)!important;transform:scale(.98)}
+.autobar{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:15;display:flex;align-items:center;gap:10px;background:rgba(17,27,33,.88);color:#fff;border-radius:999px;padding:7px 8px 7px 14px;font-size:14px;white-space:nowrap;box-shadow:0 6px 20px -8px rgba(0,0,0,.5)}
+.autobar i{width:8px;height:8px;border-radius:50%;background:#ff5a4f;animation:lv 1.2s infinite}
+.autobar button{border:0;background:#fff;color:#111b21;border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px;cursor:pointer}
 .typing .bub{display:flex;gap:4px;padding:12px 14px;min-width:0}
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--wa-meta);opacity:.5;animation:bl 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
@@ -130,6 +147,7 @@ button{font:inherit;color:inherit}
 .tile.want{background:var(--accent-soft)}.tile.want .n{color:var(--accent)}
 .tile.need{background:var(--blue-soft)}.tile.need .n{color:var(--blue)}
 .tile.done{background:var(--green-soft)}.tile.done .n{color:var(--green)}
+.tile .s{display:block;font-size:13px;font-weight:700;color:var(--green);margin-top:3px}
 .tile.bump .n{animation:bump .6s ease-out}
 @keyframes bump{40%{transform:scale(1.22)}}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
@@ -182,6 +200,7 @@ button{font:inherit;color:inherit}
       <button type="button" class="wa-lang" id="langBtn"></button>
     </header>
     <div class="chat" id="chat" role="log" aria-live="polite"></div>
+    <div class="autobar" id="autoBar" hidden><i></i><span data-t="playing"></span><button type="button" id="stopAuto" data-t="stop"></button></div>
     <form class="wa-in" id="form" autocomplete="off">
       <label class="wa-field"><span aria-hidden="true">☺</span><input id="txt" aria-label="Message"></label>
       <button class="wa-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 21 12 3.4 3.6l-.01 6.53L15 12 3.39 13.87z"/></svg></button>
@@ -207,7 +226,10 @@ en:{title:'Hostel Headhunter',pageSub:'Demo for Wilson. Tap the buttons in Whats
  assistant:'Hostel Assistant',online:'online',typing:'typing…',typeHere:'Message',forwarded:'Forwarded',lang:'中文',
  notice:'🔒 Demo with sample people. Nothing is really sent.',
  welcome:"Hi Wilson 👋 I'm your hostel assistant.\nTell me when a tenant moves in or a boss needs workers. I do the rest.\n\nTap a button to try 👇",
- btn_tenant:'🏠 New tenant moved in',btn_boss:'👷 A boss needs workers',btn_check:'💬 Monthly check-in',btn_post:'↪ Forward a hiring post',btn_yes:'✅ Yes, send them',btn_no:'Not now',btn_sendwa:'📤 Send from my WhatsApp',btn_again:'🔁 Start again',
+ btn_auto:'▶ Show me everything (1 min)',btn_tenant:'🏠 New tenant moved in',btn_boss:'👷 A boss needs workers',btn_check:'💬 Monthly check-in',btn_post:'↪ Forward a hiring post',btn_yes:'✅ Yes, send them',btn_no:'Not now',btn_sendwa:'📤 Send from my WhatsApp',btn_again:'🔁 Start again',
+ voiceTx:'New tenant, Ali bin Ahmad, H07 Batu Kawa bed 2B, 250 a month. Now doing general work. Number 011-2000 3456.',transcript:'Transcript',playing:'Playing the demo',stop:'Stop',
+ rentKept:'RM{rm} rent kept',
+ b_voice:'🎤 Got it from your voice note ✓\n*Ali bin Ahmad* · 011-2000 3456\nH07 Batu Kawa, bed 2B · RM250 a month\nNow: general worker\n\nI\'m messaging Ali now to ask about his work 💬',
  m_tenant:'New tenant 🏠\nAli bin Ahmad, 011-2000 3456\nH07 Batu Kawa, bed 2B, RM250 a month\nWorks as a general worker',
  b_saved:"Saved ✓ Ali is in H07 Batu Kawa.\nI'm messaging Ali now to ask about his work 💬",
  b_ali:'*Ali replied ✓*\nHas worked as: {jobs}\nWants a new job: Yes, if the pay is better\nCan work in Malaysia: Yes, Malaysian\n\nAdded to "Who wants work" ✓',
@@ -239,7 +261,10 @@ zh:{title:'宿舍猎头',pageSub:'给 Wilson 的示范：按 WhatsApp 里的按�
  assistant:'宿舍助理',online:'在线',typing:'正在输入…',typeHere:'输入信息',forwarded:'已转发',lang:'EN',
  notice:'🔒 示范版，人名都是假的，不会真的发出信息。',
  welcome:'Wilson 你好 👋 我是你的宿舍助理。\n有新租客入住、或有老板要请人，告诉我就好，其他我来做。\n\n按下面的按钮试试 👇',
- btn_tenant:'🏠 新租客入住',btn_boss:'👷 有老板要请人',btn_check:'💬 每月问候',btn_post:'↪ 转发请人贴文',btn_yes:'✅ 好，发给老板',btn_no:'先不要',btn_sendwa:'📤 用我的 WhatsApp 发送',btn_again:'🔁 重新开始',
+ btn_auto:'▶ 自动播放全部（1 分钟）',btn_tenant:'🏠 新租客入住',btn_boss:'👷 有老板要请人',btn_check:'💬 每月问候',btn_post:'↪ 转发请人贴文',btn_yes:'✅ 好，发给老板',btn_no:'先不要',btn_sendwa:'📤 用我的 WhatsApp 发送',btn_again:'🔁 重新开始',
+ voiceTx:'新租客，Ali bin Ahmad，住 H07 Batu Kawa 床位 2B，月租 250，现在做 general worker，电话 011-2000 3456。',transcript:'语音转文字',playing:'正在自动播放',stop:'停止',
+ rentKept:'保住租金 RM{rm}',
+ b_voice:'🎤 收到你的语音 ✓\n*Ali bin Ahmad* · 011-2000 3456\nH07 Batu Kawa，床位 2B · 月租 RM250\n现在：杂工\n\n我现在 WhatsApp 问 Ali 的工作经验 💬',
  m_tenant:'新租客 🏠\nAli bin Ahmad，011-2000 3456\nH07 Batu Kawa，床位 2B，月租 RM250\n现在做杂工',
  b_saved:'已保存 ✓ Ali 住 H07 Batu Kawa。\n我现在 WhatsApp 问 Ali 的工作经验 💬',
  b_ali:'*Ali 回复了 ✓*\n做过：{jobs}\n想换工：想，工资高就换\n可在马来西亚工作：可以，本地人\n\n已加入「谁在找工」✓',
@@ -290,10 +315,12 @@ const $=s=>document.querySelector(s);
 const mobile=()=>matchMedia('(max-width:899px)').matches;
 const ICON={reply:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
  ticks:'<svg viewBox="0 0 16 11" fill="currentColor"><path d="M11.07.65 4.6 7.1 2.2 4.73 1 5.9l3.6 3.55L12.25 1.8zM15 .65 8.53 7.1l-.7-.7-1.18 1.17 1.88 1.88L16.18 1.8z"/></svg>',
+ play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>',pause:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>',
  fwd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5V20"/></svg>'};
 
 /* ---------- state (fresh on every load: it's a demo) ---------- */
-let S,seq=0,tick=0,busy=false,gen=0;const FLASH=new Set();
+let S,seq=0,tick=0,busy=false,gen=0,auto=false;
+const WAVE=[30,55,40,80,62,35,90,70,45,100,60,38,75,52,85,40,65,30,58,92,48,70,36,82,55,44,68,33,50,28];const FLASH=new Set();
 function seed(){
   const T=(id,name,hostel,jobs,status)=>({id,name,hostel,jobs,status,ts:++tick});
   return{msgs:[],done:{},started:5,pending:[],
@@ -326,6 +353,7 @@ function msgEl(m,anim){
   if(m.who==='day'){d.className='day';d.textContent=t(m.k).toUpperCase();return d}
   const i=S.msgs.indexOf(m),prev=S.msgs[i-1];
   d.className='msg '+m.who+(!prev||prev.who!==m.who?' tail':'')+(anim?' in':'');
+  if(m.k==='voice'){d.innerHTML=`<div class="bub"><div class="voice"><button type="button" class="vplay" data-play aria-label="Play">${ICON.play}</button><div class="wave">${WAVE.map(h=>`<i style="height:${h}%"></i>`).join('')}</div><span class="vav">W<em>🎤</em></span></div><div class="vfoot"><span class="vdur">0:09</span><span class="meta">${m.time}${ICON.ticks}</span></div><div class="vtr"><small>${esc(t('transcript'))}</small>${esc(t('voiceTx'))}</div></div>`;return d}
   const body=(MSG[m.k]||(v=>fmt(t(m.k,v))))(m.v||{});
   const btns=(m.btns||[]).map(b=>`<button type="button" class="wbtn" data-b="${b}" data-m="${m.id}">${ICON.reply}${esc(t('btn_'+b))}</button>`).join('');
   d.innerHTML=`<div class="bub">${m.fwd?`<div class="fwd">${ICON.fwd}${esc(t('forwarded'))}</div>`:''}<div class="tx">${body}<span class="meta">${m.time}${m.who==='me'?ICON.ticks:''}</span></div>${btns?`<div class="btns">${btns}</div>`:''}</div>`;
@@ -337,7 +365,7 @@ function renderChat(){chat.innerHTML='';S.msgs.forEach(m=>chat.appendChild(msgEl
 const liveMsg=()=>[...S.msgs].reverse().find(m=>m.btns&&m.btns.length);
 function refreshBtns(){
   const live=liveMsg(),firstLive=live&&chat.querySelector(`.wbtn[data-m="${live.id}"]`);
-  chat.querySelectorAll('.wbtn').forEach(b=>{const ok=!busy&&live&&!live.used&&+b.dataset.m===live.id;b.disabled=!ok;b.classList.toggle('go',!!ok&&b===firstLive)});
+  chat.querySelectorAll('.wbtn').forEach(b=>{const ok=!busy&&!auto&&live&&!live.used&&+b.dataset.m===live.id;b.disabled=!ok;b.classList.toggle('go',!!ok&&b===firstLive)});
 }
 function showTyping(on){
   $('#status').textContent=t(on?'typing':'online');
@@ -351,8 +379,8 @@ const nextBtns=()=>['tenant','boss','check','post'].filter(k=>!S.done[k]).slice(
 
 /* ---------- the demo stories ---------- */
 const F={
-  async tenant(s){S.done.tenant=true;me('m_tenant',s);
-    await bot('b_saved',{},null,1000);
+  async tenant(s){S.done.tenant=true;
+    if(s){me(null,s);await bot('b_saved',{},null,1000)}else{add({who:'me',k:'voice'});if(auto)playVoice(chat.querySelector('[data-play]'));await bot('b_voice',{},null,1500)}
     await bot('b_ali',{jobs:['gw','construction']},nextBtns(),2600);
     change(()=>{S.tenants.push(touch({id:'ali',name:'Ali bin Ahmad',hostel:'H07 Batu Kawa',jobs:['gw','construction'],status:'looking',fresh:true}))})},
   async boss(s){S.done.boss=true;me('m_boss',s);
@@ -384,6 +412,7 @@ const F={
 async function run(k,s){
   if(busy)return;
   if(k==='again'){restart();return}
+  if(k==='auto'){autoplay();return}
   busy=true;refreshBtns();
   try{
     await F[k](s);
@@ -396,7 +425,31 @@ chat.addEventListener('click',e=>{
   const b=e.target.closest('.wbtn');
   if(b&&!b.disabled){const m=S.msgs.find(x=>x.id===+b.dataset.m);m.used=true;run(b.dataset.b);return}
   const o=e.target.closest('[data-open]');if(o)openPanel(o.dataset.open);
+  const pl=e.target.closest('[data-play]');if(pl)playVoice(pl);
 });
+function playVoice(btn){
+  const bars=[...btn.parentElement.querySelectorAll('.wave i')];if(btn.dataset.on)return;btn.dataset.on=1;btn.innerHTML=ICON.pause;let i=0;
+  const iv=setInterval(()=>{if(i<bars.length){bars[i++].classList.add('on')}else{clearInterval(iv);setTimeout(()=>{bars.forEach(b=>b.classList.remove('on'));btn.innerHTML=ICON.play;delete btn.dataset.on},500)}},150);
+}
+
+/* ---------- autoplay: taps through every story by itself ---------- */
+async function autoplay(){
+  auto=true;$('#autoBar').hidden=false;refreshBtns();const g=gen;
+  try{
+    for(const k of ['tenant','boss','yes','check','post','sendwa']){
+      await sleep(1400);if(!auto)break;
+      const m=[...S.msgs].reverse().find(x=>x.btns&&x.btns.includes(k)),b=m&&chat.querySelector(`.wbtn[data-m="${m.id}"][data-b="${k}"]`);
+      if(b){b.classList.add('press');b.scrollIntoView({block:'nearest',behavior:'smooth'});await sleep(500);b.classList.remove('press')}
+      if(m)m.used=true;
+      await run(k);
+      if(k==='tenant'&&auto){
+        await sleep(1200);openPanel('ali');const a=$('#aliChat');a.scrollTop=0;await sleep(700);a.scrollTo({top:a.scrollHeight,behavior:'smooth'});await sleep(3200);closePanel('ali')}
+    }
+    if(auto&&mobile()){await sleep(1800);openPanel('dash')}
+  }catch(e){if(e!=='restart')throw e}
+  if(g===gen){auto=false;$('#autoBar').hidden=true;refreshBtns()}
+}
+$('#stopAuto').onclick=()=>{auto=false;$('#autoBar').hidden=true;refreshBtns()};
 $('#form').addEventListener('submit',e=>{
   e.preventDefault();const inp=$('#txt'),s=inp.value.trim();if(!s||busy)return;inp.value='';
   const l=s.toLowerCase(),live=liveMsg(),open=live&&!live.used?live:null;
@@ -422,11 +475,11 @@ function renderDash(){
   const n={want:want.length,need:S.bosses.filter(b=>b.state!=='filled').length,done:S.started};
   const tag=x=>x.status==='matched'?['b','gSent']:x.fresh?['g','gNew']:['o','gLook'];
   const btag=b=>b.state==='filled'?['g',t('gFilled')]:b.state==='sent'?['b',t('gSent')]:b.state==='lead'?['v',t('gLead')]:b.state==='messaged'?['v',t('gMsg')]:['o',t('gFound',{a:b.found,b:b.count})];
-  const tile=(c,k,l)=>`<div class="tile ${c}${lastN&&lastN[k]!==n[k]?' bump':''}"><span class="n">${n[k]}</span><span class="l">${esc(t(l))}</span></div>`;
+  const tile=(c,k,l,sub='')=>`<div class="tile ${c}${lastN&&lastN[k]!==n[k]?' bump':''}"><span class="n">${n[k]}</span><span class="l">${esc(t(l))}</span>${sub?`<span class="s">${esc(sub)}</span>`:''}</div>`;
   dash.innerHTML=`<button type="button" class="back" data-close="dash">${esc(t('back'))}</button>
   <div class="dh"><h2>${esc(t('dashTitle'))}</h2><span class="live"><i></i>${esc(t('live'))}</span></div>
   <p class="dsub">${esc(t('dsub'))}</p>
-  <div class="tiles">${tile('want','want','tWant')}${tile('need','need','tNeed')}${tile('done','done','tDone')}</div>
+  <div class="tiles">${tile('want','want','tWant')}${tile('need','need','tNeed')}${tile('done','done','tDone',t('rentKept',{rm:(S.started*250).toLocaleString('en-MY')}))}</div>
   <div class="cols">
     <section class="col"><h3>${esc(t('cWant'))}</h3>${want.map(x=>`<div class="item${FLASH.has(x.id)?' flash':''}"><span class="av">${esc(ini(x.name))}</span><span><b>${esc(x.name)}</b><small>${esc(jl(x.jobs))} · ${esc(x.friendOf?t('friendOf',{n:x.friendOf}):x.hostel)}</small></span><span class="tag ${tag(x)[0]}">${esc(t(tag(x)[1]))}</span></div>`).join('')}</section>
     <section class="col"><h3>${esc(t('cNeed'))}</h3>${bs.map(b=>`<div class="item${FLASH.has(b.id)?' flash':''}"><span class="av b">${esc(ini(b.name))}</span><span><b>${esc(b.name)}</b><small>${esc(t('needs',{j:JOBS[b.job][lang],c:b.count}))} · ${esc(b.area)}</small></span><span class="tag ${btag(b)[0]}">${esc(btag(b)[1])}</span></div>`).join('')}</section>
@@ -458,10 +511,10 @@ function applyLang(){
 $('#langBtn').onclick=()=>{lang=lang==='en'?'zh':'en';try{localStorage.setItem('hh3-lang',lang)}catch(e){}applyLang();renderChat();renderDash()};
 let toastT;function toast(m){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=m;$('#phone').appendChild(d);clearTimeout(toastT);toastT=setTimeout(()=>d.remove(),3200)}
 function restart(){
-  gen++;busy=false;tick=0;seq=0;S=seed();lastN=null;FLASH.clear();
+  gen++;busy=false;auto=false;$('#autoBar').hidden=true;tick=0;seq=0;S=seed();lastN=null;FLASH.clear();
   closePanel('ali');closePanel('dash');$('#dashDot').hidden=true;
   chat.innerHTML='';showTyping(false);
-  add({who:'notice'});add({who:'bot',k:'welcome',btns:['tenant','boss','check']});
+  add({who:'notice'});add({who:'bot',k:'welcome',btns:['auto','tenant','boss']});
   renderDash();
 }
 applyLang();renderAli();restart();
