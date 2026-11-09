@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Jo Lillywhite Art, homepage mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1d1a17;
+    --ink-soft:#4a443d;
+    --paper:#f6f3ee;
+    --line:#d9d2c7;
+    --bg:#eeedf6;        /* season tint, set by JS */
+    --accent:#4f45a0;    /* season accent */
+    --accent-ink:#ffffff;
+    --ease-out:cubic-bezier(0.23,1,0.32,1);
+    --ease-move:cubic-bezier(0.77,0,0.175,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Figtree",system-ui,sans-serif;color:var(--ink);background:var(--paper);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:var(--accent-ink)}
+  a{color:inherit;text-underline-offset:3px}
+  img{display:block;max-width:100%}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+  .mock-bar{background:var(--ink);color:#f4efe7;font-size:13px;text-align:center;padding:8px 16px;letter-spacing:.01em}
+  .mock-bar a{color:#fff;font-weight:600}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,white);transition:background .6s var(--ease-out);border-bottom:1px solid color-mix(in srgb,var(--accent) 14%,transparent)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px;gap:24px}
+  .mark{font-family:"Young Serif",serif;font-size:26px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+  .mark small{display:block;font-family:"Figtree",sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:-4px}
+  .links{display:flex;gap:26px;list-style:none;font-weight:500;font-size:15px}
+  .links a{text-decoration:none;padding:6px 0;border-bottom:2px solid transparent;transition:border-color .2s}
+  @media (hover:hover) and (pointer:fine){.links a:hover{border-color:var(--accent)}}
+  .basket{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+  .basket svg{width:22px;height:22px}
+  .basket b{background:var(--accent);color:var(--accent-ink);border-radius:20px;font-size:12px;min-width:20px;height:20px;display:grid;place-items:center;padding:0 6px;transition:background .6s var(--ease-out)}
+
+  /* hero */
+  .hero{background:var(--bg);transition:background .6s var(--ease-out);padding:56px 0 72px}
+  .hero-grid{display:grid;grid-template-columns:1fr 1.05fr;grid-template-areas:"intro frame" "walk frame";column-gap:64px;align-items:center}
+  .intro{grid-area:intro;align-self:end}.walk{grid-area:walk;align-self:start}.frame{grid-area:frame}
+  .hero h1{font-family:"Young Serif",serif;font-weight:400;font-size:clamp(44px,6vw,84px);line-height:1.02;letter-spacing:-.025em;max-width:9ch}
+  .hero p.lede{font-size:19px;color:var(--ink-soft);max-width:44ch;margin:22px 0 30px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 24px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;transition:transform .12s var(--ease-out),background .6s var(--ease-out),color .2s}
+  .btn:active{transform:scale(.97)}
+  .btn-main{background:var(--accent);color:var(--accent-ink)}
+  .btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+
+  .walk{margin-top:44px}
+  .walk h2{font-size:15px;font-weight:600;margin-bottom:12px}
+  .seasons{display:flex;gap:8px;flex-wrap:wrap}
+  .season{height:44px;padding:0 18px;border-radius:999px;background:color-mix(in srgb,white 70%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 18%,transparent);font-weight:500;display:flex;align-items:center;gap:8px;transition:transform .12s var(--ease-out),background .25s,color .25s}
+  .season:active{transform:scale(.97)}
+  .season i{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .season[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+
+  .frame{position:relative;aspect-ratio:4/5;max-height:640px;justify-self:end;width:100%}
+  .frame .canvas{position:absolute;inset:0;background:#fff;padding:14px;box-shadow:0 30px 60px -28px rgba(29,26,23,.45),0 2px 6px rgba(29,26,23,.12)}
+  .frame .pic{position:absolute;inset:14px;overflow:hidden;background:var(--accent)}
+  .frame .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 0 0 0);transition:clip-path .8s var(--ease-move),opacity .4s}
+  .frame .pic img.out{clip-path:inset(0 0 0 100%)}
+  .frame .pic img.in-start{clip-path:inset(0 100% 0 0);transition:none}
+  .label{position:absolute;left:-28px;bottom:36px;background:#fff;padding:14px 18px;min-width:230px;box-shadow:0 14px 30px -16px rgba(29,26,23,.4);font-size:14px;line-height:1.45}
+  .label strong{font-family:"Young Serif",serif;font-weight:400;font-size:19px;display:block}
+  .label span{color:var(--ink-soft)}
+  .label .price{color:var(--ink);font-weight:600;margin-top:4px;display:block;font-variant-numeric:tabular-nums}
+
+  /* join */
+  .join{margin-top:26px;background:#fff;border-radius:18px;padding:18px;max-width:520px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 12px 28px -20px rgba(29,26,23,.35)}
+  .join p{font-size:15px;margin-bottom:10px}
+  .join form{display:flex;gap:8px}
+  .join input{flex:1;min-width:0;height:48px;border-radius:12px;border:1px solid var(--line);padding:0 14px;font:inherit;font-size:16px;background:#fbfaf8}
+  .join input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+  .join .btn{height:48px;border-radius:12px;padding:0 18px;white-space:nowrap}
+  .join .done{display:none;font-weight:600}
+  .join.sent form{display:none}.join.sent .done{display:block}
+
+  /* trust */
+  .trust{border-block:1px solid var(--line);background:var(--paper)}
+  .trust ul{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .trust li{padding:22px 20px;font-size:15px;line-height:1.4;border-left:1px solid var(--line)}
+  .trust li:first-child{border-left:0}
+  .trust b{display:block;font-weight:600}
+  .trust span{color:var(--ink-soft)}
+
+  section.block{padding:88px 0}
+  .head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:34px}
+  .head h2{font-family:"Young Serif",serif;font-weight:400;font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-.02em}
+  .head p{color:var(--ink-soft);max-width:46ch}
+  .head a{font-weight:600;white-space:nowrap}
+
+  /* originals */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:34px 26px}
+  .work{display:flex;flex-direction:column}
+  .work .img{background:#e9e4dc;aspect-ratio:1/1;overflow:hidden;position:relative;margin-bottom:14px}
+  .work .img img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+  @media (hover:hover) and (pointer:fine){.work:hover .img img{transform:scale(1.03)}}
+  .work h3{font-family:"Young Serif",serif;font-weight:400;font-size:20px;line-height:1.2}
+  .work .meta{font-size:14px;color:var(--ink-soft);margin:2px 0 8px}
+  .work .row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 10px;margin-top:auto}
+  .work .price{font-weight:600;font-variant-numeric:tabular-nums}
+  .add{height:38px;padding:0 14px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);font-weight:600;font-size:14px;transition:transform .12s var(--ease-out),background .2s,color .2s}
+  .add:active{transform:scale(.97)}
+  .add.added{background:var(--ink);color:#fff}
+  .sold-tag{position:absolute;top:12px;left:12px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:4px}
+  .tell{height:38px;padding:0 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:14px;transition:background .6s var(--ease-out)}
+
+  /* prints */
+  .prints{background:color-mix(in srgb,var(--bg) 70%,white);transition:background .6s var(--ease-out)}
+  .rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,1fr);gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  @media (min-width:981px){.rail{grid-auto-columns:calc((100% - 88px)/5);overflow:visible}}
+  .add,.tell{white-space:nowrap;flex:none}
+  .rail .work{scroll-snap-align:start}
+  .rail .img{aspect-ratio:4/5;background:#fff;padding:12px;box-shadow:0 18px 34px -24px rgba(29,26,23,.5)}
+
+  /* commissions + about */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .split .photo{aspect-ratio:4/5;background:#e9e4dc;overflow:hidden;position:relative}
+  .split .photo img{width:100%;height:100%;object-fit:cover}
+  .split h2{font-family:"Young Serif",serif;font-weight:400;font-size:clamp(32px,4vw,50px);line-height:1.05;letter-spacing:-.02em;margin-bottom:18px}
+  .split p{color:var(--ink-soft);max-width:52ch;margin-bottom:14px}
+  .steps{list-style:none;counter-reset:s;margin:22px 0 28px;display:grid;gap:12px}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+  .steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700;font-size:14px;transition:background .6s var(--ease-out)}
+  .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 26px}
+  .pill-row span{padding:6px 12px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:14px}
+
+  footer{background:var(--ink);color:#e9e3d9;padding:64px 0 40px;font-size:15px}
+  footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+  footer .mark{color:#fff}
+  footer h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#bfb6a8;margin-bottom:10px;font-weight:600}
+  footer ul{list-style:none;display:grid;gap:6px}
+  footer a{text-decoration:none}
+  footer .fine{border-top:1px solid #3a352f;margin-top:44px;padding-top:20px;color:#a79e90;font-size:13px}
+
+  /* notes for Jo */
+  .notes{position:fixed;right:18px;bottom:18px;z-index:40;width:320px;background:#fff;border-radius:16px;box-shadow:0 24px 50px -20px rgba(29,26,23,.5),0 0 0 1px rgba(29,26,23,.06);overflow:hidden;transform-origin:bottom right;transition:transform .3s var(--ease-out),opacity .3s}
+  .notes.closed{transform:scale(.95);opacity:0;pointer-events:none}
+  .notes header{position:static;background:var(--ink);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;border:0}
+  .notes ol{padding:14px 18px 16px 34px;font-size:14px;line-height:1.5;display:grid;gap:8px;color:var(--ink-soft)}
+  .notes ol b{color:var(--ink)}
+  .notes-open{position:fixed;right:18px;bottom:18px;z-index:39;height:44px;padding:0 16px;border-radius:999px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;box-shadow:0 12px 26px -12px rgba(0,0,0,.5)}
+
+  .fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:16px;font-family:"Young Serif",serif;color:#fff;font-size:18px;background:linear-gradient(160deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#1d1a17))}
+
+  @media (max-width:980px){
+    .links{display:none}
+    .hero-grid{grid-template-columns:1fr;grid-template-areas:"intro" "frame" "walk";row-gap:36px}
+    .split{grid-template-columns:1fr;gap:40px}
+    .walk{margin-top:0}
+    .frame{max-height:none;justify-self:stretch}
+    .label{left:12px;bottom:12px;min-width:0}
+    .grid{grid-template-columns:repeat(2,1fr);gap:26px 16px}
+    .trust ul{grid-template-columns:1fr 1fr}
+    .trust li:nth-child(3){border-left:0}
+    .trust li{border-top:1px solid var(--line)}
+    .trust li:nth-child(-n+2){border-top:0}
+    footer .cols{grid-template-columns:1fr}
+    .head{flex-direction:column;align-items:start}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 16px}
+    body{font-size:16px}
+    .hero{padding:32px 0 48px}
+    .hero p.lede{font-size:17px}
+    .mark{font-size:22px}
+    .join form{flex-direction:column}
+    .join input{flex:none;width:100%}
+    .seasons{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+    .season{padding:0 6px;justify-content:center;font-size:14px;gap:6px}
+    .season i{width:9px;height:9px}
+    .work h3{font-size:17px}
+    .add,.tell{height:36px;padding:0 12px;font-size:13px}
+    .notes{left:12px;right:12px;width:auto;bottom:12px}
+    section.block{padding:64px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.01ms!important}
+  }
+</style>
+<script>function fb(img,label){const d=document.createElement("div");d.className="fallback";d.textContent=label;img.replaceWith(d);}</script>
+</head>
+<body>
+
+<div class="mock-bar">Homepage mockup made for Jo by <a href="https://www.instagram.com/bunga.studios/">@bunga.studios</a>. Paintings and words are Jo's own, from jolillywhiteart.co.uk</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="mark" href="#">Jo Lillywhite<small>Landscape artist, Oxfordshire</small></a>
+    <ul class="links">
+      <li><a href="#originals">Originals</a></li>
+      <li><a href="#prints">Prints &amp; cards</a></li>
+      <li><a href="#commissions">Commissions</a></li>
+      <li><a href="#about">About Jo</a></li>
+      <li><a href="#visit">Visit the studio</a></li>
+    </ul>
+    <button class="basket" aria-label="Basket">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <b id="count">0</b>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="intro">
+      <h1>Nature, reimagined in colour</h1>
+      <p class="lede">Bold, uplifting paintings of the woods, fields and changing seasons of the Chilterns, painted in acrylic and pastel in South Oxfordshire.</p>
+      <div class="cta">
+        <a class="btn btn-main" href="#originals">Browse originals</a>
+        <a class="btn btn-ghost" href="#prints">Prints from £40</a>
+      </div>
+    </div>
+
+      <div class="walk">
+        <h2>Which season do you love walking in?</h2>
+        <div class="seasons" role="group" aria-label="Pick a season">
+          <button class="season" data-s="spring" aria-pressed="true"><i style="background:#6b5fc4"></i>Spring</button>
+          <button class="season" data-s="summer" aria-pressed="false"><i style="background:#e0a21b"></i>Summer</button>
+          <button class="season" data-s="autumn" aria-pressed="false"><i style="background:#c2562a"></i>Autumn</button>
+          <button class="season" data-s="winter" aria-pressed="false"><i style="background:#3f6f91"></i>Winter</button>
+        </div>
+        <div class="join" id="join">
+          <p id="joinText">Join my collectors list for occasional news of new spring paintings, exhibitions and art trails.</p>
+          <form onsubmit="event.preventDefault();document.getElementById('join').classList.add('sent')">
+            <input type="email" required placeholder="Your email" aria-label="Your email">
+            <button class="btn btn-main" type="submit">Join the list</button>
+          </form>
+          <p class="done" id="joinDone">Mockup only, nothing was saved. On your real site this joins your Mailchimp collectors list for new spring paintings.</p>
+        </div>
+      </div>
+
+    <div class="frame">
+      <div class="canvas"></div>
+      <div class="pic" id="pic">
+        <img id="heroImg" alt="Bluebell Tide by Jo Lillywhite" src="https://www.jolillywhiteart.co.uk/wp-content/uploads/2026/03/Bluebell-Serenity-med-scaled.jpg">
+      </div>
+      <div class="label" id="label">
+        <strong>Bluebell Tide</strong>
+        <span>Acrylic, 51 x 76 cm, framed</span>
+        <span class="price">£950</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="wrap">
+    <ul>
+      <li><b>Visit the studio</b><span>Studio viewings in Woodcote, by appointment</span></li>
+      <li><b>Insured UK delivery</b><span>Secure and insured, quoted by size</span></li>
+      <li><b>Not sure yet?</b><span>Ask for extra photos or a video call</span></li>
+      <li><b>Broadway Arts Festival</b><span>2026 finalist with Sundown Ferns</span></li>
+    </ul>
+  </div>
+</div>
+
+<section class="block" id="originals">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h2>Original paintings</h2>
+        <p>One of each, so when a painting sells it's marked sold straight away.</p>
+      </div>
+      <a href="#">See all originals</a>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section class="block prints" id="prints">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h2>Giclée prints</h2>
+        <p>Fine art prints of favourite paintings, from £40. Greetings cards too.</p>
+      </div>
+      <a href="#">Shop prints &amp; cards</a>
+    </div>
+    <div class="rail" id="rail"></div>
+  </div>
+</section>
+
+<section class="block" id="commissions">
+  <div class="wrap split">
+    <div class="photo"><img alt="Autumn Tunnel Wood by Jo Lillywhite" src="https://www.jolillywhiteart.co.uk/wp-content/uploads/2024/07/IMG_E4806.jpg" onerror="fb(this,'Autumn Tunnel Wood')"></div>
+    <div>
+      <h2>A painting of a place you love</h2>
+      <p>Commissioning a painting is an easier process than you might think. Tell Jo about the place, pet or building you have in mind.</p>
+      <div class="pill-row">
+        <span>Landscapes</span>
+        <span>Animal portraits</span>
+        <span>Buildings</span>
+      </div>
+      <a class="btn btn-main" href="#">Start a commission</a>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="about" style="padding-top:0">
+  <div class="wrap split">
+    <div>
+      <h2>Hello, I'm Jo</h2>
+      <p>I'm a self-taught contemporary British landscape artist, born in Lancashire and now living in South Oxfordshire. My paintings are often semi-abstract, sometimes more representational, but always colourful and striking.</p>
+      <div class="pill-row">
+        <span>Chairman, Oxfordshire Artweeks</span>
+        <span>Reading Guild of Artists</span>
+        <span>Henley Arts &amp; Crafts Guild</span>
+      </div>
+      <a class="btn btn-ghost" href="#">Read Jo's story</a>
+    </div>
+    <div class="photo"><img alt="Jo Lillywhite at the Thame art crawl" src="https://www.jolillywhiteart.co.uk/wp-content/uploads/2024/01/jo-Thame-art-crawl-photo-scaled.jpg" onerror="fb(this,'Jo at the Thame art crawl')"></div>
+  </div>
+</section>
+
+<footer id="visit">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="mark">Jo Lillywhite</div>
+        <p style="margin-top:12px;max-width:40ch;color:#cfc6b8">Studio in Woodcote, Oxfordshire. Visits by appointment.</p>
+        <p style="margin-top:10px"><a href="mailto:enquiries@jolillywhiteart.co.uk">enquiries@jolillywhiteart.co.uk</a></p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul><li><a href="#originals">Originals</a></li><li><a href="#prints">Prints</a></li><li><a href="#prints">Cards</a></li><li><a href="#commissions">Commissions</a></li></ul>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <ul><li><a href="https://www.instagram.com/jolillywhiteart/">Instagram</a></li><li><a href="https://www.threads.com/@jolillywhiteart">Threads</a></li><li><a href="https://www.facebook.com/JoLillywhiteArt">Facebook</a></li><li><a href="#">Exhibitions</a></li></ul>
+      </div>
+    </div>
+    <div class="fine">All paintings © Jo Lillywhite. Shown here only as a homepage mockup.</div>
+  </div>
+</footer>
+
+<button class="notes-open" id="notesOpen">Notes for Jo</button>
+<aside class="notes closed" id="notes" aria-label="Notes for Jo">
+  <header><span>What changes for you, Jo</span><button id="notesClose" aria-label="Close notes" style="display:grid;place-items:center;width:28px;height:28px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button></header>
+  <ol>
+    <li><b>No plugins to fix.</b> Hosting, basket and checkout come in one place, with real support.</li>
+    <li><b>Add a painting from your phone</b> in about two minutes: photo, title, size, price, done.</li>
+    <li><b>Originals mark themselves sold</b> the moment someone buys.</li>
+    <li><b>Your domain and Google spot stay.</b> Old page links point to the new pages.</li>
+    <li><b>Your collectors list grows</b> from the season picker at the top.</li>
+  </ol>
+</aside>
+
+<script>
+  const U = "https://www.jolillywhiteart.co.uk/wp-content/uploads/";
+  const seasons = {
+    spring:{bg:"#eeedf6",accent:"#4f45a0",title:"Bluebell Tide",meta:"Acrylic, 51 x 76 cm, framed",price:"£950",img:"2026/03/Bluebell-Serenity-med-scaled.jpg"},
+    summer:{bg:"#fbf2dc",accent:"#9a6a00",title:"Sunny Path",meta:"Acrylic on canvas, 12 x 16 in, framed",price:"£375",img:"2026/07/Sunny-Path-scaled.jpg"},
+    autumn:{bg:"#f8e9de",accent:"#a5431c",title:"Autumn Light",meta:"22 x 32 cm, framed",price:"£180",img:"2026/05/Autumn-Light-scaled.jpg"},
+    winter:{bg:"#e7eef3",accent:"#2f5d7c",title:"Winter Arches",meta:"Acrylic on canvas, 76 x 100 cm, framed",price:"£980",img:"2024/09/Winter-Arches-Medium.jpg"}
+  };
+  const originals = [
+    {t:"Spring Greens",m:"Acrylic on canvas, 40 x 50 cm, framed",p:"£475",i:"2026/07/Spring-Greens-scaled.jpg"},
+    {t:"Sundown Ferns",m:"Acrylic, 40 x 50 cm",p:"",i:"2026/07/Sundown-Ferns-scaled.jpg",sold:true},
+    {t:"Jay Woods",m:"Acrylic on canvas, 91 x 60 cm",p:"£625",i:"2026/03/Jay-Woods-JOL-scaled.jpg"},
+    {t:"Bluebell Way",m:"30 x 30 cm, framed",p:"£325",i:"2026/03/Bluebell-Way-med-1-scaled.jpg"},
+    {t:"Forest Gateway",m:"22 x 30 cm, framed",p:"£195",i:"2026/03/Cool-Forest-Light-2-scaled-e1780394534771.jpg"},
+    {t:"Candy Avenue",m:"Acrylic on canvas, 40 x 50 cm",p:"£380",i:"2026/03/Candy-Avenue-Jo-Lillywhite.jpg"},
+    {t:"Blossom Tunnel",m:"30 x 30 cm, framed",p:"£280",i:"2025/01/blossom-tunnel.jpg"},
+    {t:"Walking Through",m:"50 x 40 cm, framed",p:"£395",i:"2025/12/Walking-Through-Medium.jpg"}
+  ];
+  const prints = [
+    {t:"Golden Glow",m:"Giclée print",p:"£45",i:"2024/10/IMG_E5789-scaled-e1792937273545.jpg"},
+    {t:"Autumn Tunnel Wood",m:"Giclée print",p:"£55",i:"2024/07/IMG_E4806.jpg"},
+    {t:"Woodland Light",m:"Giclée print",p:"£50",i:"2024/07/jolillywhite_woodlandlightgreyscourt-scaled.jpg"},
+    {t:"Woodpecker",m:"Giclée print",p:"£60",i:"2025/04/Green-Woodpecker-print-3-scaled.jpg"},
+    {t:"Woodland Rays",m:"Giclée print",p:"£95",i:"2024/10/IMG_E5788-scaled.jpg"}
+  ];
+
+  let count=0;
+  function card(w){
+    const el=document.createElement("article");el.className="work";
+    el.innerHTML=`<div class="img">${w.sold?'<span class="sold-tag">Sold</span>':''}<img loading="lazy" alt="${w.t} by Jo Lillywhite" src="${U+w.i}"></div>
+      <h3>${w.t}</h3><div class="meta">${w.m}</div>
+      <div class="row"><span class="price">${w.sold?'Prints coming soon':w.p}</span>
+      ${w.sold?'<button class="tell">Tell me</button>':'<button class="add">Add to basket</button>'}</div>`;
+    const img=el.querySelector("img");img.onerror=()=>fb(img,w.t);
+    const add=el.querySelector(".add");
+    if(add) add.onclick=()=>{ if(add.classList.contains("added")) return; add.classList.add("added"); add.textContent="In basket"; document.getElementById("count").textContent=++count; };
+    const tell=el.querySelector(".tell");
+    if(tell) tell.onclick=()=>{ document.getElementById("join").scrollIntoView({behavior:"smooth",block:"center"}); };
+    return el;
+  }
+  originals.forEach(w=>document.getElementById("grid").appendChild(card(w)));
+  prints.forEach(w=>document.getElementById("rail").appendChild(card(w)));
+
+  const root=document.documentElement, pic=document.getElementById("pic");
+  const heroImg0=document.getElementById("heroImg"); heroImg0.onerror=()=>fb(heroImg0,"Bluebell Tide");
+  function setSeason(key){
+    const s=seasons[key];
+    root.style.setProperty("--bg",s.bg); root.style.setProperty("--accent",s.accent);
+    document.querySelectorAll(".season").forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===key));
+    document.getElementById("joinText").textContent=`Join my collectors list for occasional news of new ${key} paintings, exhibitions and art trails.`;
+    document.getElementById("joinDone").textContent=`Mockup only, nothing was saved. On your real site this joins your Mailchimp collectors list for new ${key} paintings.`;
+    const old=pic.lastElementChild;
+    const img=new Image(); img.alt=s.title+" by Jo Lillywhite"; img.className="in-start"; img.src=U+s.img;
+    img.onerror=()=>fb(img,s.title);
+    pic.appendChild(img);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ img.classList.remove("in-start"); }));
+    setTimeout(()=>{ if(old && old!==img) old.remove(); },900);
+    const l=document.getElementById("label");
+    l.innerHTML=`<strong>${s.title}</strong><span>${s.meta}</span><span class="price">${s.price}</span>`;
+  }
+  document.querySelectorAll(".season").forEach(b=>b.addEventListener("click",()=>setSeason(b.dataset.s)));
+
+  const notes=document.getElementById("notes"), open=document.getElementById("notesOpen");
+  document.getElementById("notesClose").onclick=()=>{notes.classList.add("closed");open.hidden=false};
+  open.onclick=()=>{notes.classList.remove("closed");open.hidden=true};
+  const q=new URLSearchParams(location.search);
+  if(q.has("clean")){open.hidden=true;}
+  if(q.has("notes")){notes.classList.remove("closed");open.hidden=true;}
+  const ss=new URLSearchParams(location.search).get("season"); if(ss&&seasons[ss]) setSeason(ss);
+</script>
+</body>
+</html>

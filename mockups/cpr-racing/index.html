@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>CPR Racing, homepage and dealer mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>function fb(img,label){const d=document.createElement("div");d.className="fallback";d.textContent=label;img.replaceWith(d);}</script>
+<style>
+  :root{
+    --red:#dd183b;
+    --red-deep:#b0102c;
+    --ink:#121214;
+    --steel:#2a2c31;
+    --mid:#5d6068;
+    --line:#dfe1e5;
+    --plate:#f2f3f5;
+    --white:#ffffff;
+    --ease-out:cubic-bezier(0.23,1,0.32,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Archivo",system-ui,sans-serif;color:var(--ink);background:var(--white);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--red);color:#fff}
+  a{color:inherit;text-underline-offset:3px}
+  img{display:block;max-width:100%}
+  button,select,input{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;background:none}
+  :focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+  .display{font-family:"Big Shoulders Display",sans-serif;font-weight:800;letter-spacing:-.01em;line-height:.92;text-transform:uppercase}
+
+  .mock-bar{background:#000;color:#e9e9ec;font-size:13px;text-align:center;padding:8px 16px}
+  .mock-bar a{color:#fff;font-weight:600}
+
+  .util{background:var(--steel);color:#d7d9de;font-size:13.5px}
+  .util .wrap{display:flex;justify-content:space-between;align-items:center;height:38px;gap:16px}
+  .util nav{display:flex;gap:22px}
+  .util a{text-decoration:none}
+  .util a.hot{color:#fff;font-weight:600}
+
+  header.main{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+  .bar{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;height:78px}
+  .logo img{height:50px;width:auto}
+  .logo .fallback-logo{font-family:"Big Shoulders Display",sans-serif;font-weight:900;font-size:30px;color:var(--red)}
+  .search{display:flex;align-items:center;height:46px;border-radius:8px;background:var(--plate);padding:0 14px;gap:10px;max-width:560px;width:100%;justify-self:center}
+  .search svg{width:18px;height:18px;color:var(--mid);flex:none}
+  .search input{border:0;background:transparent;width:100%;font-size:15px;outline:none}
+  .icons{display:flex;gap:18px;align-items:center;font-weight:600;font-size:14px}
+  .icons button{display:flex;align-items:center;gap:6px}
+  .icons svg{width:22px;height:22px}
+  .cart b{background:var(--red);color:#fff;border-radius:20px;font-size:12px;min-width:20px;height:20px;display:grid;place-items:center;padding:0 6px}
+  .menu{display:flex;gap:30px;height:46px;align-items:center;font-weight:600;font-size:14.5px;border-top:1px solid var(--line)}
+  .menu a{text-decoration:none;padding:12px 0;border-bottom:2px solid transparent}
+  @media (hover:hover) and (pointer:fine){.menu a:hover{border-color:var(--red)}}
+
+  /* hero */
+  .hero{position:relative;background:var(--ink);color:#fff;overflow:hidden}
+  .hero .wrap{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;padding-top:64px;padding-bottom:72px;align-items:center;z-index:2}
+  .hero h1{font-size:clamp(54px,7.4vw,108px)}
+  .hero h1 em{font-style:normal;color:var(--red)}
+  .hero p{color:#c9cbd1;font-size:18px;max-width:46ch;margin:22px 0 30px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 24px;border-radius:8px;font-weight:700;font-size:15.5px;text-decoration:none;transition:transform .12s var(--ease-out),background .2s}
+  .btn:active{transform:scale(.97)}
+  .btn-red{background:var(--red);color:#fff}
+  @media (hover:hover) and (pointer:fine){.btn-red:hover{background:var(--red-deep)}}
+  .btn-line{box-shadow:inset 0 0 0 1.5px currentColor}
+  .since{display:flex;gap:28px;margin-top:36px;color:#9fa2aa;font-size:14px}
+  .since b{display:block;color:#fff;font-size:15px}
+
+  .pulse{position:absolute;left:0;right:0;top:46%;height:160px;z-index:1;pointer-events:none;opacity:.55}
+  .pulse path{fill:none;stroke:var(--red);stroke-width:3;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:2600;stroke-dashoffset:2600;animation:draw 2.2s var(--ease-out) .2s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* finder */
+  .finder{background:#fff;color:var(--ink);border-radius:14px;padding:22px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+  .finder h2{font-size:30px;margin-bottom:4px}
+  .finder .sub{color:var(--mid);font-size:14px;margin-bottom:14px}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--plate);border-radius:10px;padding:4px;margin-bottom:16px}
+  .tab{height:40px;border-radius:7px;font-weight:600;font-size:14px;color:var(--mid);transition:background .2s,color .2s}
+  .tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .pane{display:none}.pane.on{display:block}
+  .selects{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+  select{height:48px;border-radius:8px;border:1px solid var(--line);padding:0 10px;background:#fff;font-size:15px;width:100%}
+  .sizes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .size{height:44px;min-width:58px;padding:0 12px;border-radius:8px;box-shadow:inset 0 0 0 1px var(--line);font-weight:700;font-variant-numeric:tabular-nums;transition:background .15s,color .15s,transform .12s var(--ease-out)}
+  .size:active{transform:scale(.97)}
+  .size[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+  .kind{display:flex;gap:8px;margin-bottom:14px}
+  .kind label{flex:1;display:flex;align-items:center;gap:8px;height:44px;border-radius:8px;box-shadow:inset 0 0 0 1px var(--line);padding:0 12px;font-size:14px;font-weight:600;cursor:pointer}
+  .kind input{accent-color:var(--red)}
+  .finder .btn{width:100%}
+  .result{margin-top:12px;font-size:14px;color:var(--mid);min-height:22px}
+  .result b{color:var(--ink)}
+
+  /* trust */
+  .trust{border-bottom:1px solid var(--line)}
+  .trust ul{list-style:none;display:grid;grid-template-columns:repeat(4,1fr)}
+  .trust li{padding:20px 22px;border-left:1px solid var(--line);font-size:14.5px;line-height:1.4}
+  .trust li:first-child{border-left:0;padding-left:0}
+  .trust b{display:block;font-size:15.5px}
+  .trust span{color:var(--mid)}
+
+  section.block{padding:84px 0}
+  .head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:30px}
+  .head h2{font-size:clamp(40px,5vw,64px)}
+  .head p{color:var(--mid);max-width:50ch;margin-top:8px}
+  .head a{font-weight:700;white-space:nowrap}
+
+  /* systems */
+  .systems{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .sys{display:flex;gap:14px;align-items:center;padding:18px;border-radius:12px;background:var(--plate);text-decoration:none;font-weight:700;line-height:1.25;transition:background .2s}
+  @media (hover:hover) and (pointer:fine){.sys:hover{background:#e7e9ec}}
+  .sys svg{width:40px;height:40px;flex:none;color:var(--red)}
+  .sys small{display:block;font-weight:500;color:var(--mid);font-size:13px;margin-top:2px}
+
+  /* products */
+  .viewtoggle{display:inline-grid;grid-template-columns:1fr 1fr;background:var(--plate);border-radius:10px;padding:4px}
+  .viewtoggle button{height:38px;padding:0 16px;border-radius:7px;font-weight:600;font-size:14px;color:var(--mid)}
+  .viewtoggle button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .products{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .prod{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+  .prod .img{aspect-ratio:4/3;background:#fff;display:grid;place-items:center;position:relative;border-bottom:1px solid var(--line)}
+  .prod .img img{width:100%;height:100%;object-fit:contain;padding:18px}
+  .prod .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .prod .cat{font-size:12.5px;color:var(--mid);font-weight:600;letter-spacing:.02em}
+  .prod h3{font-size:17px;line-height:1.3}
+  .prod .price{font-weight:800;font-size:20px;font-variant-numeric:tabular-nums;margin-top:auto}
+  .prod .price small{font-weight:600;font-size:13px;color:var(--mid);margin-left:6px}
+  .prod .row{display:flex;gap:8px;margin-top:8px}
+  .prod .row .btn{height:44px;flex:1;font-size:14.5px}
+  body:not(.dealer) .dealer-only{display:none!important}
+  body.dealer .retail-only{display:none!important}
+  .prod .tier{margin-top:auto}
+  .tier{font-size:13.5px;color:var(--mid);display:flex;flex-direction:column;gap:2px;background:var(--plate);border-radius:8px;padding:10px 12px}
+  .tier b{color:var(--ink)}
+  .qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;height:44px}
+  .qty button{width:38px;height:100%;font-weight:700;font-size:18px}
+  .qty input{width:44px;text-align:center;border:0;font-weight:700;font-variant-numeric:tabular-nums}
+  .breaks{display:flex;gap:6px;flex-wrap:wrap}
+  .breaks span{font-size:12px;font-weight:700;padding:4px 8px;border-radius:6px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+
+  /* service band */
+  .service{background:var(--red);color:#fff}
+  .service .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center;padding-top:64px;padding-bottom:64px}
+  .service .photo{background:#fff;border-radius:14px;aspect-ratio:4/3;overflow:hidden;position:relative}
+  .service .photo img{width:100%;height:100%;object-fit:contain;padding:20px}
+  .service h2{font-size:clamp(42px,5vw,70px)}
+  .service p{font-size:18px;margin:16px 0 24px;color:#ffe3e8;max-width:44ch}
+  .service .btn{background:#fff;color:var(--red)}
+
+  /* dealers */
+  .dealers .grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .perks{list-style:none;display:grid;gap:14px;margin:22px 0 28px}
+  .perks li{display:grid;grid-template-columns:30px 1fr;gap:12px}
+  .perks svg{width:26px;height:26px;color:var(--red)}
+  .perks b{display:block}
+  .perks span{color:var(--mid)}
+  .quick{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .quick header{background:var(--ink);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+  .quick header small{font-weight:500;color:#aeb1b8}
+  .quick table{width:100%;border-collapse:collapse;font-size:14.5px}
+  .quick th{text-align:left;font-size:12.5px;color:var(--mid);font-weight:600;padding:10px 18px;border-bottom:1px solid var(--line)}
+  .quick td{padding:12px 18px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  .quick td.sku{font-weight:700}
+  .quick tfoot td{border:0;padding:16px 18px}
+  .quick .btn{width:100%}
+
+  footer{background:var(--ink);color:#c9cbd1;padding:60px 0 36px;font-size:15px}
+  footer .cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:36px}
+  footer h4{color:#fff;font-size:14px;margin-bottom:10px}
+  footer ul{list-style:none;display:grid;gap:6px}
+  footer a{text-decoration:none}
+  footer .big{font-family:"Big Shoulders Display",sans-serif;font-weight:800;font-size:34px;color:#fff;text-transform:uppercase;line-height:1}
+  footer .fine{border-top:1px solid #2c2e33;margin-top:40px;padding-top:18px;font-size:13px;color:#8d9098}
+
+  .notes{position:fixed;right:18px;bottom:18px;z-index:40;width:330px;background:#fff;border-radius:14px;box-shadow:0 24px 50px -20px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.06);overflow:hidden;transform-origin:bottom right;transition:transform .3s var(--ease-out),opacity .3s}
+  .notes.closed{transform:scale(.95);opacity:0;pointer-events:none}
+  .notes .nh{background:var(--red);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px}
+  .notes ol{padding:14px 18px 16px 34px;font-size:14px;line-height:1.5;display:grid;gap:8px;color:var(--mid)}
+  .notes ol b{color:var(--ink)}
+  .notes-open{position:fixed;right:18px;bottom:18px;z-index:39;height:44px;padding:0 16px;border-radius:999px;background:var(--red);color:#fff;font-weight:700;font-size:14px;box-shadow:0 12px 26px -12px rgba(0,0,0,.5)}
+
+  .fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:16px;font-weight:700;color:var(--mid);background:var(--plate)}
+
+  @media (max-width:1020px){
+    .menu{display:none}
+    .bar{grid-template-columns:auto 1fr;height:auto;padding:12px 0;row-gap:10px}
+    .search{grid-column:1/-1;grid-row:2;max-width:none}
+    .icons{justify-self:end}
+    .icons .acct span{display:none}
+    .hero .wrap,.service .wrap,.dealers .grid{grid-template-columns:1fr;gap:36px}
+    .products{grid-template-columns:repeat(2,1fr)}
+    .systems{grid-template-columns:repeat(2,1fr)}
+    .trust ul{grid-template-columns:1fr 1fr}
+    .trust li{border-left:0;padding-left:0;border-top:1px solid var(--line)}
+    .trust li:nth-child(-n+2){border-top:0}
+    footer .cols{grid-template-columns:1fr 1fr}
+    .head{flex-direction:column;align-items:start}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 16px}
+    .util nav a:not(.hot){display:none}
+    .logo img{height:40px}
+    .hero .wrap{padding-top:40px;padding-bottom:48px}
+    .hero p{font-size:16.5px}
+    .since{gap:18px}
+    .selects{grid-template-columns:1fr}
+    .products{grid-template-columns:1fr}
+    .systems{grid-template-columns:1fr}
+    .kind{flex-direction:column}
+    section.block{padding:60px 0}
+    .quick th:nth-child(2),.quick td:nth-child(2){display:none}
+    .notes{left:12px;right:12px;width:auto;bottom:12px}
+    footer .cols{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-bar">Homepage and dealer mockup made for CPR Racing by <a href="https://www.instagram.com/bunga.studios/">@bunga.studios</a>. Products, prices and words are from cprracing.com</div>
+
+<div class="util">
+  <div class="wrap">
+    <span>Call 248-294-7157</span>
+    <nav>
+      <a href="#">Authorized resellers</a>
+      <a href="#">Instructions</a>
+      <a class="hot" href="#dealers">Dealer sign in</a>
+    </nav>
+  </div>
+</div>
+
+<header class="main">
+  <div class="wrap">
+    <div class="bar">
+      <a class="logo" href="#"><img alt="CPR Racing" src="https://cprracing.com/wp-content/uploads/2025/09/cropped-image.png" onerror="this.outerHTML='&lt;span class=&quot;fallback-logo&quot;&gt;CPR RACING&lt;/span&gt;'"></a>
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input placeholder="Search part number, AN size or part name" aria-label="Search parts">
+      </label>
+      <div class="icons">
+        <button class="acct" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Sign in</span></button>
+        <button class="cart" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.2"/><circle cx="17" cy="20.5" r="1.2"/></svg><b id="count">0</b></button>
+      </div>
+    </div>
+    <nav class="menu">
+      <a href="#parts">Shop parts</a>
+      <a href="#systems">Fuel systems</a>
+      <a href="#service">Injector service</a>
+      <a href="#dealers">Become a dealer</a>
+      <a href="#">Tech &amp; instructions</a>
+      <a href="#">CPR Racing friends</a>
+      <a href="#">About us</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <svg class="pulse" viewBox="0 0 1600 160" preserveAspectRatio="none" aria-hidden="true"><path d="M0 100 H520 L560 100 L585 40 L612 150 L640 12 L668 128 L690 100 H1600"/></svg>
+  <div class="wrap">
+    <div>
+      <h1 class="display">Total fuel systems.<br><em>Made in Michigan</em><br>since 1996.</h1>
+      <p>Fuel injectors, AN fittings, performance hose, pumps and complete Power Box kits for street and race builds.</p>
+      <div class="cta">
+        <a class="btn btn-red" href="#parts">Shop parts</a>
+        <a class="btn btn-line" href="#dealers">Become a dealer</a>
+      </div>
+      <div class="since">
+        <div><b>Since 1996</b>Still love what we do</div>
+        <div><b>94% recommend</b>on Facebook, 10 reviews</div>
+      </div>
+    </div>
+
+    <div class="finder" id="finder">
+      <h2 class="display">Find parts for your build</h2>
+      <div class="sub">Only see parts that fit.</div>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-p="veh">By vehicle</button>
+        <button class="tab" role="tab" aria-selected="false" data-p="an">By AN size</button>
+      </div>
+      <div class="pane on" id="veh">
+        <div class="selects">
+          <select aria-label="Year"><option>Year</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option><option>2019</option></select>
+          <select aria-label="Make" id="make"><option>Make</option><option>Dodge</option><option>Chevrolet</option><option>Ford</option></select>
+          <select aria-label="Model" id="model"><option>Model</option><option>Challenger Hellcat</option><option>Charger Hellcat</option></select>
+        </div>
+        <button class="btn btn-red" id="vehGo">Show parts that fit</button>
+      </div>
+      <div class="pane" id="an">
+        <div class="sizes" role="group" aria-label="AN size">
+          <button class="size" aria-pressed="false">-4AN</button>
+          <button class="size" aria-pressed="true">-6AN</button>
+          <button class="size" aria-pressed="false">-8AN</button>
+          <button class="size" aria-pressed="false">-10AN</button>
+          <button class="size" aria-pressed="false">-12AN</button>
+        </div>
+        <div class="kind">
+          <label><input type="radio" name="k" checked> Fittings</label>
+          <label><input type="radio" name="k"> Hose</label>
+          <label><input type="radio" name="k"> Tools</label>
+        </div>
+        <button class="btn btn-red" id="anGo">Show -6AN fittings</button>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="wrap">
+    <ul>
+      <li><b>Made in Michigan</b><span>Fuel systems and precision AN fittings</span></li>
+      <li><b>Real people on the phone</b><span>248-294-7157 or sales@cprracing.com</span></li>
+      <li><b>Install instructions</b><span>Catalog and how-tos for every system</span></li>
+      <li><b>Dealer pricing</b><span>Trade prices and bulk ordering for shops</span></li>
+    </ul>
+  </div>
+</div>
+
+<section class="block" id="systems">
+  <div class="wrap">
+    <div class="head">
+      <div><h2 class="display">Shop by system</h2><p>Everything from the tank to the injector.</p></div>
+      <a href="#">All products</a>
+    </div>
+    <div class="systems">
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="15" y="4" width="10" height="8" rx="1"/><path d="M13 12h14l-2 18h-10z"/><path d="M20 30v6"/></svg><span>Fuel injectors<small>and components</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 6l8-3 8 3v9l-8 3-8-3z"/><path d="M16 18v15h8V18"/></svg><span>AN fittings<small>Straight, tee, bulkhead</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 30c8 0 8-20 16-20s8 14 14 14"/><path d="M5 26c8 0 8-20 16-20s8 14 14 14" opacity=".5"/></svg><span>AN performance hose<small>Braided, nylon, PTFE</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="8" y="10" width="24" height="22" rx="3"/><path d="M14 10V6h12v4M14 20h12M14 26h8"/></svg><span>Power Box<small>A complete fuel system in a box</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="13" y="5" width="14" height="24" rx="5"/><path d="M20 29v6M16 12h8"/></svg><span>Fuel pumps<small>Filters, regulators, parts</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 16h32M8 16v10M16 16v10M24 16v10M32 16v10"/></svg><span>EFI fuel rail<small>and hose kits</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 20h8l3-6 6 12 3-6h8"/></svg><span>Harnesses &amp; EFI adapters<small>OEM and racing</small></span></a>
+      <a class="sys" href="#"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M10 30 26 14M24 8a6 6 0 0 0 8 8l-4-1-3-3z"/></svg><span>AN wrenches &amp; tools<small>Do it once, do it right</small></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="parts" style="background:var(--plate)">
+  <div class="wrap">
+    <div class="head">
+      <div><h2 class="display">Popular parts</h2><p>Dealers see their own trade price and bulk breaks on every part after signing in.</p></div>
+      <div class="viewtoggle" role="group" aria-label="Preview">
+        <button aria-pressed="true" data-v="retail">Retail view</button>
+        <button aria-pressed="false" data-v="dealer">Dealer view</button>
+      </div>
+    </div>
+    <div class="products" id="products"></div>
+  </div>
+</section>
+
+<section class="service" id="service">
+  <div class="wrap">
+    <div class="photo"><img alt="GDI injector rebuild, cleaning and flow testing" src="https://cprracing.com/wp-content/uploads/2025/05/gdi_cpracing2025.jpg" onerror="fb(this,'GDI injector service')"></div>
+    <div>
+      <h2 class="display">Injector rebuild, cleaning and flow testing</h2>
+      <p>GDI fuel injector rebuild, cleaning and flow testing service, $45.</p>
+      <a class="btn" href="#">Book the injector service</a>
+    </div>
+  </div>
+</section>
+
+<section class="block dealers" id="dealers">
+  <div class="wrap grid">
+    <div>
+      <h2 class="display" style="font-size:clamp(40px,5vw,64px)">Sell CPR Racing in your shop</h2>
+      <ul class="perks">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><div><b>Your trade price on every part</b><span>Signed-in dealers see their tier price, retail shoppers never do.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><div><b>Quick order by part number</b><span>Type part numbers and quantities, add them all at once.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><div><b>Reorder in one tap</b><span>Past orders saved, so restocking takes seconds.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><div><b>Listed as an authorized reseller</b><span>Customers near you find your shop on our map.</span></div></li>
+      </ul>
+      <a class="btn btn-red" href="#">Apply to become a dealer</a>
+    </div>
+    <div class="quick">
+      <header><span>Dealer quick order</span><small>Preview</small></header>
+      <table>
+        <thead><tr><th>Part</th><th>Description</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td class="sku">393000-08</td><td>AN straight bulkhead fitting</td><td>25</td></tr>
+          <tr><td class="sku">9468636</td><td>Walbro fuel pump pigtail 36"</td><td>10</td></tr>
+          <tr><td class="sku">TEE-3</td><td>AN male flare tee fitting, 3-way</td><td>20</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3"><button class="btn btn-red">Add 55 items to order</button></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="big">CPR Racing</div>
+        <p style="margin-top:10px;max-width:36ch">High performance fuel systems and precision AN fittings, made in Michigan since 1996.</p>
+        <p style="margin-top:12px">248-294-7157<br><a href="mailto:sales@cprracing.com">sales@cprracing.com</a></p>
+      </div>
+      <div><h4>Shop</h4><ul><li><a href="#">All products</a></li><li><a href="#">Power Box</a></li><li><a href="#">Apparel &amp; stickers</a></li><li><a href="#">Garage sale</a></li></ul></div>
+      <div><h4>Help</h4><ul><li><a href="#">Instructions catalog</a></li><li><a href="#">Technical</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h4>Dealers</h4><ul><li><a href="#">Become a dealer</a></li><li><a href="#">Dealer sign in</a></li><li><a href="#">Authorized resellers</a></li></ul></div>
+    </div>
+    <div class="fine">Mockup only. Logo, products and prices belong to CPR Racing.</div>
+  </div>
+</footer>
+
+<button class="notes-open" id="notesOpen">Notes for CPR Racing</button>
+<aside class="notes closed" id="notes" aria-label="Notes for CPR Racing">
+  <div class="nh"><span>What this setup gives you</span><button id="notesClose" aria-label="Close notes" style="display:grid;place-items:center;width:28px;height:28px;color:#fff"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button></div>
+  <ol>
+    <li><b>One WooCommerce store, two price lists.</b> Retail for everyone, tier prices for signed-in dealers.</li>
+    <li><b>A parts finder</b> by vehicle and by AN size, so buyers only see what fits.</li>
+    <li><b>Dealer quick order</b> by part number, plus one-tap reorder.</li>
+    <li><b>Fast on phones</b> for people ordering from the garage or the pits.</li>
+    <li><b>Your products, links and Google rankings stay.</b> Nothing gets lost in the move.</li>
+  </ol>
+</aside>
+
+<script>
+  const U="https://cprracing.com/wp-content/uploads/";
+  const products=[
+    {c:"Fuel system kits",t:"Hellcat AN fitting and hose kit",p:"$480.00",i:"2025/03/d33d9289-dc25-41e6-bdfd-779acf4077c6-600x600.webp",b:["2+","5+","10+"]},
+    {c:"AN fittings",t:"AN male flare tee fitting, 3-way",p:"$11.43",from:true,i:"2025/06/Tee-3-Male-TEE-Fittings.jpg",b:["10+","25+","50+"]},
+    {c:"AN fittings",t:"AN straight bulkhead fitting",p:"$6.48",from:true,i:"2021/05/393000_08.png",b:["10+","25+","50+"]},
+    {c:"EFI adapters",t:"3/8 male/female EFI quick connect adapter, 1/8\" NPT port",p:"$37.77",i:"2025/04/IMG_4018-scaled.webp",b:["5+","10+","25+"]},
+    {c:"Fuel pumps",t:"Walbro fuel pump pigtail, 36\"",p:"$16.00",i:"2026/06/9468636long.jpg",b:["10+","25+","50+"]},
+    {c:"Injector service",t:"GDI injector rebuild, cleaning and flow testing",p:"$45.00",i:"2025/05/gdi_cpracing2025.jpg",b:["4+","8+","16+"]}
+  ];
+  let count=0;
+  const grid=document.getElementById("products");
+  products.forEach(x=>{
+    const el=document.createElement("article");el.className="prod";
+    el.innerHTML=`<div class="img"><img loading="lazy" alt="${x.t.replace(/"/g,'&quot;')}" src="${U+x.i}"></div>
+      <div class="body"><div class="cat">${x.c}</div><h3>${x.t}</h3>
+      <div class="price retail-only">${x.from?'<small style="margin:0 6px 0 0">From</small>':''}${x.p}</div>
+      <div class="tier dealer-only"><span>Your dealer price</span><b>Shown for your tier after sign in</b><div class="breaks">${x.b.map(v=>`<span>${v}</span>`).join("")}</div></div>
+      <div class="row retail-only"><button class="btn btn-red add">Add to cart</button></div>
+      <div class="row dealer-only"><div class="qty"><button aria-label="Less">−</button><input value="${x.b[0].replace('+','')}" aria-label="Quantity"><button aria-label="More">+</button></div><button class="btn btn-red add">Add to order</button></div></div>`;
+    const img=el.querySelector("img");img.onerror=()=>fb(img,x.t);
+    el.querySelectorAll(".add").forEach(a=>a.onclick=()=>{document.getElementById("count").textContent=++count;a.textContent="Added";setTimeout(()=>a.textContent=a.closest(".dealer-only")?"Add to order":"Add to cart",1200)});
+    const q=el.querySelector(".qty input");
+    el.querySelectorAll(".qty button").forEach((b,i)=>b.onclick=()=>{q.value=Math.max(1,(+q.value||0)+(i?1:-1))});
+    grid.appendChild(el);
+  });
+  document.querySelectorAll(".viewtoggle button").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".viewtoggle button").forEach(o=>o.setAttribute("aria-pressed",o===b));
+    document.body.classList.toggle("dealer",b.dataset.v==="dealer");
+  });
+  document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(o=>o.setAttribute("aria-selected",o===t));
+    document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on",p.id===t.dataset.p));
+    document.getElementById("result").textContent="";
+  });
+  const goAn=document.getElementById("anGo");
+  document.querySelectorAll(".size").forEach(s=>s.onclick=()=>{
+    document.querySelectorAll(".size").forEach(o=>o.setAttribute("aria-pressed",o===s));
+    const kind=document.querySelector(".kind input:checked").parentElement.textContent.trim().toLowerCase();
+    goAn.textContent=`Show ${s.textContent} ${kind}`;
+  });
+  document.querySelectorAll(".kind input").forEach(r=>r.onchange=()=>{
+    const s=document.querySelector('.size[aria-pressed="true"]').textContent;
+    goAn.textContent=`Show ${s} ${r.parentElement.textContent.trim().toLowerCase()}`;
+  });
+  goAn.onclick=()=>{document.getElementById("result").innerHTML=`Showing <b>${goAn.textContent.replace("Show ","")}</b> in the full store.`};
+  document.getElementById("vehGo").onclick=()=>{
+    const m=document.getElementById("model").value;
+    document.getElementById("result").innerHTML= m==="Model" ? "Pick a year, make and model first." : `Showing parts that fit the <b>${m}</b>, like the Hellcat AN fitting and hose kit.`;
+  };
+  const notes=document.getElementById("notes"),open=document.getElementById("notesOpen");
+  document.getElementById("notesClose").onclick=()=>{notes.classList.add("closed");open.hidden=false};
+  open.onclick=()=>{notes.classList.remove("closed");open.hidden=true};
+  const qs=new URLSearchParams(location.search);
+  if(qs.has("clean")) open.hidden=true;
+  if(qs.has("notes")){notes.classList.remove("closed");open.hidden=true;}
+  if(qs.has("dealer")) document.querySelector('.viewtoggle button[data-v="dealer"]').click();
+</script>
+</body>
+</html>
